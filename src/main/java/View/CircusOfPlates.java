@@ -1,6 +1,7 @@
 package View;
 
 import Model.BarObject;
+import Model.Clown;
 import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
@@ -15,7 +16,7 @@ public class CircusOfPlates implements World {
     private final int width;
     private final int height;
     private final int plateWidth = 54;
-    GameObject clown;
+    //GameObject clown;
     private final List<GameObject> constant = new LinkedList<>();
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
@@ -29,9 +30,10 @@ public class CircusOfPlates implements World {
         constant.add(new BarObject(width - 200, height / 5, 200, true, black));//upperRight
         constant.add(new BarObject(0, height / 3, 100, true, black));//lowerLeft
         constant.add(new BarObject(width - 100, height / 3, 100, true, black));//lowerRight
-
-        clown = new ImageObject(screenWidth / 3, 435, "/clown1.png");
-        control.add(clown);
+        
+        Clown clown = Clown.getInstance();//singleton pattern        
+        clown.createClown("/clown1.png");
+        control.add(clown.clownObject);
 
         //first, moving objects move on shelf then drop
         // add 20 moving objects with random colors
@@ -89,7 +91,7 @@ public class CircusOfPlates implements World {
 //        
 //        System.out.println("shelf lower left x = " + constant.get(2).getX() + " plate lower left x = " + moving.get(2).getX());
 //        System.out.println("shelf lower left y = " + constant.get(2).getY() + " plate lower left y = " + moving.get(2).getY());
-        if (intersect(moving.get(0), clown)) {
+        if (intersect(moving.get(0), control.get(0))) {
             System.out.println("correct");
         }
 
@@ -99,7 +101,7 @@ public class CircusOfPlates implements World {
                 plate.setX(plate.getX() + 1);
             } else if (intersect(plate, this.constant.get(1)) || intersect(plate, this.constant.get(3))) {
                 plate.setX(plate.getX() - 1);
-            } else if (!intersect(plate, clown)) {
+            } else if (!intersect(plate, control.get(0))) {
                 plate.setY((plate.getY() + 1));
             }
         }

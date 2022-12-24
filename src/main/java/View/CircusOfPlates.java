@@ -2,12 +2,14 @@ package View;
 
 import Model.BarObject;
 import Model.Clown;
-import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+//lesa 3ayzeen nezabatha MVC
 public class CircusOfPlates implements World {
 
     private static int MAX_TIME = 1 * 60 * 1000;
@@ -16,10 +18,11 @@ public class CircusOfPlates implements World {
     private final int width;
     private final int height;
     private final int plateWidth = 54;
-    //GameObject clown;
     private final List<GameObject> constant = new LinkedList<>();
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
+    private ArrayList<Point> shelfLocation = new ArrayList<>();
+    MovingObjectsFactory movingObjectsFactory;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -30,26 +33,29 @@ public class CircusOfPlates implements World {
         constant.add(new BarObject(width - 200, height / 5, 200, true, black));//upperRight
         constant.add(new BarObject(0, height / 3, 100, true, black));//lowerLeft
         constant.add(new BarObject(width - 100, height / 3, 100, true, black));//lowerRight
-        
+
+        shelfLocation.add(new Point(constant.get(0).getX(), constant.get(0).getY()));
+        shelfLocation.add(new Point(constant.get(1).getX() + constant.get(1).getWidth() - plateWidth, constant.get(1).getY()));
+        shelfLocation.add(new Point(constant.get(2).getX(), constant.get(2).getY()));
+        shelfLocation.add(new Point(constant.get(3).getX() + constant.get(3).getWidth() - plateWidth, constant.get(3).getY()));
+
+        movingObjectsFactory = new MovingObjectsFactory(shelfLocation);
+
         Clown clown = Clown.getInstance();//singleton pattern        
         clown.createClown("/clown1.png");
         control.add(clown.clownObject);
 
+        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
+        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
+        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
+        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
+
         //first, moving objects move on shelf then drop
         // add 20 moving objects with random colors
         // factory pattern to create plate with random pattern
-        // singleton pattern to create the clown
         // pool pattern to get the plate from the pool of plates
         // array of 30 random plates
         // replace this platesColors with factory
-        String[] platesColors = {"greenPlate", "redPlate", "bluePlate"};
-        //for (int i = 0; i < 10; i++) {
-        moving.add(new ImageObject(constant.get(0).getX(), constant.get(0).getY(), "/" + platesColors[(int) Math.floor(Math.random() * 3)] + ".png", 1));
-        moving.add(new ImageObject(constant.get(1).getX() + constant.get(1).getWidth() - plateWidth, constant.get(1).getY(), "/" + platesColors[(int) Math.floor(Math.random() * 3)] + ".png", 1));
-        moving.add(new ImageObject(constant.get(2).getX(), constant.get(2).getY(), "/" + platesColors[(int) Math.floor(Math.random() * 3)] + ".png", 1));
-        moving.add(new ImageObject(constant.get(3).getX() + constant.get(3).getWidth() - plateWidth, constant.get(3).getY(), "/" + platesColors[(int) Math.floor(Math.random() * 3)] + ".png", 1));
-        //kda we created 40 plates bas kolohom fe nafs el 4 7etat fa msh beyetfara2o
-        //}
     }
 
     private boolean intersect(GameObject o1, GameObject o2) {
@@ -85,15 +91,6 @@ public class CircusOfPlates implements World {
     @Override
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
-
-//        System.out.println("shelf upper left x = " + constant.get(0).getX() + " plate upper left x = " + moving.get(0).getX());
-//        System.out.println("shelf upper left y = " + constant.get(0).getY() + " plate upper left y = " + moving.get(0).getY());
-//        
-//        System.out.println("shelf lower left x = " + constant.get(2).getX() + " plate lower left x = " + moving.get(2).getX());
-//        System.out.println("shelf lower left y = " + constant.get(2).getY() + " plate lower left y = " + moving.get(2).getY());
-        if (intersect(moving.get(0), control.get(0))) {
-            System.out.println("correct");
-        }
 
         for (GameObject plate : moving) {
 

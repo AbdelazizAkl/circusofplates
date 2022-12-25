@@ -2,6 +2,7 @@ package View;
 
 import Model.BarObject;
 import Model.Clown;
+import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
 import java.awt.Point;
@@ -23,32 +24,34 @@ public class CircusOfPlates implements World {
     private final List<GameObject> control = new LinkedList<>();
     private ArrayList<Point> shelfLocation = new ArrayList<>();
     MovingObjectsFactory movingObjectsFactory;
+    private final int NUMBER_OF_PLATES = 20;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
         width = screenWidth;
         height = screenHeight;
 
-        constant.add(new BarObject(0, height / 5, 200, true, black));//upperLeft
-        constant.add(new BarObject(width - 200, height / 5, 200, true, black));//upperRight
-        constant.add(new BarObject(0, height / 3, 100, true, black));//lowerLeft
-        constant.add(new BarObject(width - 100, height / 3, 100, true, black));//lowerRight
-
-        shelfLocation.add(new Point(constant.get(0).getX(), constant.get(0).getY()));
-        shelfLocation.add(new Point(constant.get(1).getX() + constant.get(1).getWidth() - plateWidth, constant.get(1).getY()));
-        shelfLocation.add(new Point(constant.get(2).getX(), constant.get(2).getY()));
-        shelfLocation.add(new Point(constant.get(3).getX() + constant.get(3).getWidth() - plateWidth, constant.get(3).getY()));
-
+//        constant.add(new BarObject(0, height / 5, 200, true, black));//upperLeft
+//        constant.add(new BarObject(width - 200, height / 5, 200, true, black));//upperRight
+//        constant.add(new BarObject(0, height / 3, 100, true, black));//lowerLeft
+//        constant.add(new BarObject(width - 100, height / 3, 100, true, black));//lowerRight
+//
+//        shelfLocation.add(new Point(constant.get(0).getX(), constant.get(0).getY()));
+//        shelfLocation.add(new Point(constant.get(1).getX() + constant.get(1).getWidth() - plateWidth, constant.get(1).getY()));
+//        shelfLocation.add(new Point(constant.get(2).getX(), constant.get(2).getY()));
+//        shelfLocation.add(new Point(constant.get(3).getX() + constant.get(3).getWidth() - plateWidth, constant.get(3).getY()));
         movingObjectsFactory = new MovingObjectsFactory(shelfLocation);
+        constant.add(new ImageObject(0, 0, "/background.png"));
 
         Clown clown = Clown.getInstance();//singleton pattern        
         clown.createClown("/clown1.png");
         control.add(clown.clownObject);
+        control.add(new BarObject(clown.clownObject.getX() - 10, clown.clownObject.getY() - 5, 40, true, black));
+        control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));
 
-        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
-        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
-        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
-        moving.add(movingObjectsFactory.getRandomMovingObjectInstance());
+        for (int i = 0; i < NUMBER_OF_PLATES; i++) {
+            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(screenWidth));
+        }
 
         //first, moving objects move on shelf then drop
         // add 20 moving objects with random colors
@@ -91,17 +94,29 @@ public class CircusOfPlates implements World {
     @Override
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
+        control.get(1).setX(Clown.getInstance().clownObject.getX() - 10);
+        control.get(2).setX(Clown.getInstance().clownObject.getX() + 120);
 
         for (GameObject plate : moving) {
 
-            if (intersect(plate, this.constant.get(0)) || intersect(plate, this.constant.get(2))) {
-                plate.setX(plate.getX() + 1);
-            } else if (intersect(plate, this.constant.get(1)) || intersect(plate, this.constant.get(3))) {
-                plate.setX(plate.getX() - 1);
-            } else if (!intersect(plate, control.get(0))) {
+//            if (intersect(plate, this.constant.get(0)) || intersect(plate, this.constant.get(2))) {
+//                plate.setX(plate.getX() + 1);
+//            } else if (intersect(plate, this.constant.get(1)) || intersect(plate, this.constant.get(3))) {
+//                plate.setX(plate.getX() - 1);
+//            }
+            if (!intersect(plate, control.get(1)) && !intersect(plate, control.get(2))) { //if plate is not caught
                 plate.setY((plate.getY() + 1));
+            } else if (intersect(plate, control.get(1))) { //if plate is caught on left bar
+                    plate.setX(control.get(1).getX());
+            } else if (intersect(plate, control.get(2))) {  //if plate is caught on right bar
+                    plate.setX(control.get(2).getX());
+            }
+            if (plate.getY() > height) {
+                plate.setY(0);
+                plate.setX((int) (Math.random() * width));
             }
         }
+
         return !timeout;
     }
 

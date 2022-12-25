@@ -15,8 +15,8 @@ public class MovingObjectsFactory {
         this.shelfLocation = shelfLocation;
     }
 
-    public GameObject getRandomMovingObjectInstance() {
+    public GameObject getRandomMovingObjectInstance(int screenWidth) {
         Collections.shuffle(shelfLocation);
-        return new ImageObject((int) shelfLocation.get(0).getX(), (int) shelfLocation.get(0).getY(), paths[(int) Math.floor(Math.random() * paths.length)], 1);
+        return new ImageObject((int) (Math.random()*screenWidth), 0, paths[(int) Math.floor(Math.random() * paths.length)], 1);
     }
 }

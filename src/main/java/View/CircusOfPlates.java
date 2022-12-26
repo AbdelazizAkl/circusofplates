@@ -50,18 +50,14 @@ public class CircusOfPlates implements World {
         control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));
 
         for (int i = 0; i < NUMBER_OF_PLATES; i++) {
-            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(screenWidth,screenHeight));
+            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(screenWidth, screenHeight));
         }
-
-        //first, moving objects move on shelf then drop
-        // add 20 moving objects with random colors
-        // factory pattern to create plate with random pattern
-        // pool pattern to get the plate from the pool of plates
-        // array of 30 random plates
-        // replace this platesColors with factory
     }
 
     private boolean intersect(GameObject o1, GameObject o2) {
+        if (o1 == null || o2 == null) {
+            return false;
+        }
 
         return (Math.abs((o1.getX() + o1.getWidth() / 2) - (o2.getX() + o2.getWidth() / 2)) <= o1.getWidth()) && (Math.abs((o1.getY() + o1.getHeight() / 2) - (o2.getY() + o2.getHeight() / 2)) <= o1.getHeight());
     }
@@ -91,33 +87,60 @@ public class CircusOfPlates implements World {
         return height;
     }
 
+    private ArrayList<GameObject> leftStack = new ArrayList<>();
+    private ArrayList<GameObject> rightStack = new ArrayList<>();
+
     @Override
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
-        control.get(1).setX(Clown.getInstance().clownObject.getX() - 10);
-        control.get(2).setX(Clown.getInstance().clownObject.getX() + 120);
+        moveClownSticksWithClown();
+
+        GameObject plateOnTopLeftStack = getPlateOnTop(leftStack);
+        GameObject plateOnTopRightStack = getPlateOnTop(rightStack);
 
         for (GameObject plate : moving) {
 
-//            if (intersect(plate, this.constant.get(0)) || intersect(plate, this.constant.get(2))) {
-//                plate.setX(plate.getX() + 1);
-//            } else if (intersect(plate, this.constant.get(1)) || intersect(plate, this.constant.get(3))) {
-//                plate.setX(plate.getX() - 1);
-//            }
-            if (!intersect(plate, control.get(1)) && !intersect(plate, control.get(2))) { //if plate is not caught
-                plate.setY((plate.getY() + 1));
-            } else if (intersect(plate, control.get(1))) { //if plate is caught on left bar
-                    plate.setX(control.get(1).getX());
+            if (intersect(plate, control.get(1))) { //if plate is caught on left bar
+                plate.setX(control.get(1).getX());
+                leftStack.add(plate);
+                System.out.println("left bar");
             } else if (intersect(plate, control.get(2))) {  //if plate is caught on right bar
-                    plate.setX(control.get(2).getX());
+                plate.setX(control.get(2).getX());
+                rightStack.add(plate);
+                System.out.println("right bar");
+            } else if (intersect(plate, plateOnTopLeftStack)) {
+                plate.setX(plateOnTopLeftStack.getX());
+                leftStack.add(plate);
+                System.out.println("left stack");
+            } else if (intersect(plate, plateOnTopRightStack)) {
+                plate.setX(plateOnTopRightStack.getX());//fi bug lamma bee intersect men el ganb fa hana3mel setY - 1;
+                rightStack.add(plate);
+                System.out.println("right stack");
+            } else {
+                plate.setY((plate.getY() + 1));
             }
-            if (plate.getY() > height) {
-                plate.setY(0);
-                plate.setX((int) (Math.random() * width));
-            }
+            respawn(plate);
         }
-
         return !timeout;
+    }
+
+    public GameObject getPlateOnTop(ArrayList<GameObject> stack) {
+        if (stack.isEmpty()) {
+            return null;
+        }
+        return stack.get(stack.size() - 1);
+    }
+
+    public void moveClownSticksWithClown() {
+        control.get(1).setX(control.get(0).getX() - 10);
+        control.get(2).setX(control.get(0).getX() + 120);
+    }
+
+    public void respawn(GameObject plate) {
+        if (plate.getY() > height) {
+            plate.setY(0);
+            plate.setX((int) (Math.random() * width));
+        }
     }
 
     @Override

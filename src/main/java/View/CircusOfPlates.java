@@ -50,7 +50,7 @@ public class CircusOfPlates implements World {
         control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));
 
         for (int i = 0; i < NUMBER_OF_PLATES; i++) {
-            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(screenWidth));
+            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(screenWidth,screenHeight));
         }
 
         //first, moving objects move on shelf then drop

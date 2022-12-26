@@ -24,22 +24,12 @@ public class CircusOfPlates implements World {
     private final List<GameObject> control = new LinkedList<>();
     private ArrayList<Point> shelfLocation = new ArrayList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 20;
+    private final int NUMBER_OF_PLATES = 5;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
         width = screenWidth;
         height = screenHeight;
-
-//        constant.add(new BarObject(0, height / 5, 200, true, black));//upperLeft
-//        constant.add(new BarObject(width - 200, height / 5, 200, true, black));//upperRight
-//        constant.add(new BarObject(0, height / 3, 100, true, black));//lowerLeft
-//        constant.add(new BarObject(width - 100, height / 3, 100, true, black));//lowerRight
-//
-//        shelfLocation.add(new Point(constant.get(0).getX(), constant.get(0).getY()));
-//        shelfLocation.add(new Point(constant.get(1).getX() + constant.get(1).getWidth() - plateWidth, constant.get(1).getY()));
-//        shelfLocation.add(new Point(constant.get(2).getX(), constant.get(2).getY()));
-//        shelfLocation.add(new Point(constant.get(3).getX() + constant.get(3).getWidth() - plateWidth, constant.get(3).getY()));
         movingObjectsFactory = new MovingObjectsFactory(shelfLocation);
         constant.add(new ImageObject(0, 0, "/background.png"));
 
@@ -89,12 +79,12 @@ public class CircusOfPlates implements World {
 
     private ArrayList<GameObject> leftStack = new ArrayList<>();
     private ArrayList<GameObject> rightStack = new ArrayList<>();
+    private int numOfCaughtObjects;
 
     @Override
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
         moveClownSticksWithClown();
-
         GameObject plateOnTopLeftStack = getPlateOnTop(leftStack);
         GameObject plateOnTopRightStack = getPlateOnTop(rightStack);
 
@@ -102,12 +92,12 @@ public class CircusOfPlates implements World {
             if (leftStack.contains(plate) || rightStack.contains(plate)) {
                 continue;
             }
-            if (intersect(plate, control.get(1))&&leftStack.isEmpty()) { //if plate is caught on left bar
+            if (intersect(plate, control.get(1)) && leftStack.isEmpty()) { //if plate is caught on left bar
                 plate.setX(control.get(1).getX());
                 plate.setY(control.get(1).getY() - 5);
                 leftStack.add(plate);
-
-            } else if (intersect(plate, control.get(2))&&rightStack.isEmpty()) {  //if plate is caught on right bar
+                numOfCaughtObjects++;
+            } else if (intersect(plate, control.get(2)) && rightStack.isEmpty()) {  //if plate is caught on right bar
                 plate.setX(control.get(2).getX());
                 try {
                     plate.setY(plateOnTopRightStack.getY() - 5);
@@ -115,16 +105,17 @@ public class CircusOfPlates implements World {
                     plate.setY(control.get(2).getY() - 5);
                 }
                 rightStack.add(plate);
+                numOfCaughtObjects++;
             } else if (intersect(plate, plateOnTopLeftStack)) {
                 plate.setX(control.get(1).getX());
                 plate.setY(plateOnTopLeftStack.getY() - 5);
                 leftStack.add(plate);
-//                System.out.println("left stack");
+                numOfCaughtObjects++;
             } else if (intersect(plate, plateOnTopRightStack)) {
-                plate.setX(control.get(2).getX());//fi bug lamma bee intersect men el ganb fa hana3mel setY - 1;
+                plate.setX(control.get(2).getX());
                 plate.setY(plateOnTopRightStack.getY() - 5);
                 rightStack.add(plate);
-//                System.out.println("right stack");
+                numOfCaughtObjects++;
             } else {
                 if (!timeout) {
                     plate.setY((plate.getY() + 1));
@@ -132,7 +123,15 @@ public class CircusOfPlates implements World {
             }
             respawn(plate);
         }
+        replaceCaughtObjects();
         return !timeout;
+    }
+
+    public void replaceCaughtObjects() {
+        for (int i = 0; i < numOfCaughtObjects; i++) {
+            moving.add(movingObjectsFactory.getRandomMovingObjectInstance(width, height));
+        }
+        numOfCaughtObjects = 0;
     }
 
     public GameObject getPlateOnTop(ArrayList<GameObject> stack) {

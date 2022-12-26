@@ -24,7 +24,7 @@ public class CircusOfPlates implements World {
     private final List<GameObject> control = new LinkedList<>();
     private ArrayList<Point> shelfLocation = new ArrayList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 5;
+    private final int NUMBER_OF_PLATES = 2;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -85,35 +85,29 @@ public class CircusOfPlates implements World {
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
         moveClownSticksWithClown();
-        GameObject plateOnTopLeftStack = getPlateOnTop(leftStack);
-        GameObject plateOnTopRightStack = getPlateOnTop(rightStack);
 
         for (GameObject plate : moving) {
             if (leftStack.contains(plate) || rightStack.contains(plate)) {
                 continue;
             }
             if (intersect(plate, control.get(1)) && leftStack.isEmpty()) { //if plate is caught on left bar
-                plate.setX(control.get(1).getX());
+                plate.setX(control.get(1).getX()-8);
                 plate.setY(control.get(1).getY() - 5);
                 leftStack.add(plate);
                 numOfCaughtObjects++;
             } else if (intersect(plate, control.get(2)) && rightStack.isEmpty()) {  //if plate is caught on right bar
-                plate.setX(control.get(2).getX());
-                try {
-                    plate.setY(plateOnTopRightStack.getY() - 5);
-                } catch (NullPointerException e) {
-                    plate.setY(control.get(2).getY() - 5);
-                }
+                plate.setX(control.get(2).getX()-8);
+                plate.setY(control.get(2).getY() - 5);
                 rightStack.add(plate);
                 numOfCaughtObjects++;
-            } else if (intersect(plate, plateOnTopLeftStack)) {
+            } else if (intersect(plate, getPlateOnTop(leftStack))) {
                 plate.setX(control.get(1).getX());
-                plate.setY(plateOnTopLeftStack.getY() - 5);
+                plate.setY(getPlateOnTop(leftStack).getY() - 5);
                 leftStack.add(plate);
                 numOfCaughtObjects++;
-            } else if (intersect(plate, plateOnTopRightStack)) {
+            } else if (intersect(plate, getPlateOnTop(rightStack))) {
                 plate.setX(control.get(2).getX());
-                plate.setY(plateOnTopRightStack.getY() - 5);
+                plate.setY(getPlateOnTop(rightStack).getY() - 5);
                 rightStack.add(plate);
                 numOfCaughtObjects++;
             } else {
@@ -142,13 +136,49 @@ public class CircusOfPlates implements World {
     }
 
     public void moveClownSticksWithClown() {
+        int threeCounterLeft = 0;
+        int threeCounterRight = 0;
         control.get(1).setX(control.get(0).getX() - 10);
         control.get(2).setX(control.get(0).getX() + 120);
         for (GameObject plate : leftStack) {
-            plate.setX(control.get(1).getX());
+            plate.setX(control.get(1).getX()-8);
+            int x = leftStack.indexOf(plate);
+            if (x < 2) {
+
+            } else if (((ImageObject) leftStack.get(x - 1)).getType() == ((ImageObject) leftStack.get(x)).getType() && ((ImageObject) leftStack.get(x)).getType() == ((ImageObject) leftStack.get(x - 2)).getType()) {
+                moving.remove(leftStack.get(x));
+                moving.remove(leftStack.get(x - 1));
+                moving.remove(leftStack.get(x - 2));
+                threeCounterLeft=x;
+                score+=10;
+            }
+        }
+        try {
+            leftStack.remove(threeCounterLeft - 2);
+            leftStack.remove(threeCounterLeft - 2);
+            leftStack.remove(threeCounterLeft - 2);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+
         }
         for (GameObject plate : rightStack) {
-            plate.setX(control.get(2).getX());
+            plate.setX(control.get(2).getX()-8);
+            int x = rightStack.indexOf(plate);
+            if (x < 2) {
+
+            } else if (((ImageObject) rightStack.get(x - 1)).getType() == ((ImageObject) rightStack.get(x)).getType() && ((ImageObject) rightStack.get(x)).getType() == ((ImageObject) rightStack.get(x - 2)).getType()) {
+                moving.remove(rightStack.get(x));
+                moving.remove(rightStack.get(x - 1));
+                moving.remove(rightStack.get(x - 2));
+                score+=10;
+                threeCounterRight=x;
+            }
+        }
+        try {
+            rightStack.remove(threeCounterRight - 2);
+            rightStack.remove(threeCounterRight - 2);
+            rightStack.remove(threeCounterRight - 2);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+
         }
     }
 

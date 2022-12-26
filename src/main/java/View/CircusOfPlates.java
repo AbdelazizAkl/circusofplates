@@ -99,25 +99,36 @@ public class CircusOfPlates implements World {
         GameObject plateOnTopRightStack = getPlateOnTop(rightStack);
 
         for (GameObject plate : moving) {
-
-            if (intersect(plate, control.get(1))) { //if plate is caught on left bar
+            if (leftStack.contains(plate) || rightStack.contains(plate)) {
+                continue;
+            }
+            if (intersect(plate, control.get(1))&&leftStack.isEmpty()) { //if plate is caught on left bar
                 plate.setX(control.get(1).getX());
+                plate.setY(control.get(1).getY() - 5);
                 leftStack.add(plate);
-                System.out.println("left bar");
-            } else if (intersect(plate, control.get(2))) {  //if plate is caught on right bar
+
+            } else if (intersect(plate, control.get(2))&&rightStack.isEmpty()) {  //if plate is caught on right bar
                 plate.setX(control.get(2).getX());
+                try {
+                    plate.setY(plateOnTopRightStack.getY() - 5);
+                } catch (NullPointerException e) {
+                    plate.setY(control.get(2).getY() - 5);
+                }
                 rightStack.add(plate);
-                System.out.println("right bar");
             } else if (intersect(plate, plateOnTopLeftStack)) {
-                plate.setX(plateOnTopLeftStack.getX());
+                plate.setX(control.get(1).getX());
+                plate.setY(plateOnTopLeftStack.getY() - 5);
                 leftStack.add(plate);
-                System.out.println("left stack");
+//                System.out.println("left stack");
             } else if (intersect(plate, plateOnTopRightStack)) {
-                plate.setX(plateOnTopRightStack.getX());//fi bug lamma bee intersect men el ganb fa hana3mel setY - 1;
+                plate.setX(control.get(2).getX());//fi bug lamma bee intersect men el ganb fa hana3mel setY - 1;
+                plate.setY(plateOnTopRightStack.getY() - 5);
                 rightStack.add(plate);
-                System.out.println("right stack");
+//                System.out.println("right stack");
             } else {
-                plate.setY((plate.getY() + 1));
+                if (!timeout) {
+                    plate.setY((plate.getY() + 1));
+                }
             }
             respawn(plate);
         }
@@ -134,6 +145,12 @@ public class CircusOfPlates implements World {
     public void moveClownSticksWithClown() {
         control.get(1).setX(control.get(0).getX() - 10);
         control.get(2).setX(control.get(0).getX() + 120);
+        for (GameObject plate : leftStack) {
+            plate.setX(control.get(1).getX());
+        }
+        for (GameObject plate : rightStack) {
+            plate.setX(control.get(2).getX());
+        }
     }
 
     public void respawn(GameObject plate) {

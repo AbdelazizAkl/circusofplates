@@ -24,7 +24,7 @@ public class CircusOfPlates implements World {
     private final List<GameObject> control = new LinkedList<>();
     private ArrayList<Point> shelfLocation = new ArrayList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 2;
+    private final int NUMBER_OF_PLATES = 20;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -201,7 +201,7 @@ public class CircusOfPlates implements World {
 
     @Override
     public int getControlSpeed() {
-        return 30;
+        return 20;
     }
 
 }

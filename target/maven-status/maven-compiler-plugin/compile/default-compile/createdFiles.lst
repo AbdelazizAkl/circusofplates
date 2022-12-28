@@ -1,3 +1,4 @@
+Model\BombObject.class
 View\MovingObjectsFactory.class
 Model\BarObject.class
 Model\ImageObject.class

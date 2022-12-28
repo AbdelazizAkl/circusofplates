@@ -2,22 +2,20 @@ package View;
 
 import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.GameObject;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class MovingObjectsFactory {
 
-    private ArrayList<Point> shelfLocation;
-    private final String[] paths = {"/greenPlate.png", "/redPlate.png", "/bluePlate.png"};
+    private final String[] plateColorPath = {"/greenPlate.png", "/redPlate.png", "/bluePlate.png"};
+    private final String[] squareColorPath = {"/greenSquare.png", "/redSquare.png", "/blueSquare.png"};
 
-    public MovingObjectsFactory(ArrayList<Point> shelfLocation) {
-        this.shelfLocation = shelfLocation;
+    public GameObject getRandomPlate(int screenWidth, int screenHeight) {
+
+        int x = (int) Math.floor(Math.random() * plateColorPath.length);
+        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), plateColorPath[x], x + 1);
     }
 
-    public GameObject getRandomMovingObjectInstance(int screenWidth, int screenHeight) {
-        Collections.shuffle(shelfLocation);
-        int x=(int) Math.floor(Math.random() * paths.length);
-        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), paths[x], x+1);
+    public GameObject getRandomSquare(int screenWidth, int screenHeight) {
+        int x = (int) Math.floor(Math.random() * squareColorPath.length);
+        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), squareColorPath[x], x + 1);
     }
 }

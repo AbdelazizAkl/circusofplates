@@ -1,4 +1,3 @@
-
 package Model;
 
 import eg.edu.alexu.csd.oop.game.GameObject;
@@ -34,12 +33,14 @@ public class ImageObject implements GameObject {
             System.out.println(getClass().getResourceAsStream(path));
         }
     }
+
     @Override
-    public int getWidth(){
+    public int getWidth() {
         return spriteImages[0].getWidth();
     }
+
     @Override
-    public int getHeight(){
+    public int getHeight() {
         return spriteImages[0].getHeight();
     }
 
@@ -65,9 +66,10 @@ public class ImageObject implements GameObject {
 
     @Override
     public void setY(int y) {
-        if (type==0)
+        if (type == 0) {
             return;
-        this.y=y;
+        }
+        this.y = y;
     }
 
     @Override

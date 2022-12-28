@@ -17,10 +17,10 @@ public class BarObject implements GameObject {
     private int x;
     private int y;
     private int width;
-    private int height=5;
+    private int height = 5;
     private boolean visible;
     private boolean horizontalOnly;
-    private int stackHeight=0;
+    private int stackHeight = 0;
 
     public BarObject(int posX, int posY, int width, boolean horizontalOnly, Color color) {
         this.x = posX;
@@ -72,16 +72,17 @@ public class BarObject implements GameObject {
         return width;
     }
 
-    public int getBarHeight(){
+    public int getBarHeight() {
         return SPRITE_HEIGHT;
     }
-    
+
     @Override
     public int getHeight() {
         return height;
     }
-    public void setHeight(int height){
-        this.height=height;
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     @Override

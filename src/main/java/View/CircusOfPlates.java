@@ -41,7 +41,7 @@ public class CircusOfPlates implements World {
             moving.add(movingObjectsFactory.getRandomPlate(screenWidth, screenHeight));
         }
         for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
-            //moving.add(movingObjectsFactory.getRandomSquare(screenWidth, screenHeight));
+            moving.add(movingObjectsFactory.getRandomSquare(screenWidth, screenHeight));
         }
     }
 
@@ -130,7 +130,7 @@ public class CircusOfPlates implements World {
                 numOfCaughtObjects++;
             } else {
                 if (!timeout) {
-                    movingObject.setY((movingObject.getY() + 2));
+                    movingObject.setY((movingObject.getY() + 1));
                 }
             }
             respawn(movingObject);

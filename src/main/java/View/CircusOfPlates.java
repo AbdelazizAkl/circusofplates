@@ -21,8 +21,8 @@ public class CircusOfPlates implements World {
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 20;
-    private final int NUMBER_OF_SQUARES = 20;
+    private final int NUMBER_OF_PLATES = 5;
+    private final int NUMBER_OF_SQUARES = 5;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -141,7 +141,7 @@ public class CircusOfPlates implements World {
 
     public void replaceCaughtObjects() {
         for (int i = 0; i < numOfCaughtObjects; i++) {
-            moving.add(movingObjectsFactory.getRandomPlate(width, height));
+            moving.add(movingObjectsFactory.getRandomPlateOrSquare(width, height));
         }
         numOfCaughtObjects = 0;
     }

@@ -18,4 +18,14 @@ public class MovingObjectsFactory {
         int x = (int) Math.floor(Math.random() * squareColorPath.length);
         return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), squareColorPath[x], x + 1);
     }
+
+    public GameObject getRandomPlateOrSquare(int screenWidth, int screenHeight) {
+        int x = (int) Math.ceil(Math.random() * 2);
+        if (x == 1) {
+            return getRandomPlate(screenWidth, screenHeight);
+        } else if (x == 2) {
+            return getRandomSquare(screenWidth, screenHeight);
+        }
+        return null;
+    }
 }

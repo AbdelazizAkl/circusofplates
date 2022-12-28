@@ -11,11 +11,11 @@ public class MovingObjectsFactory {
     public GameObject getRandomPlate(int screenWidth, int screenHeight) {
 
         int x = (int) Math.floor(Math.random() * plateColorPath.length);
-        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), plateColorPath[x], x + 1);
+        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), plateColorPath[x], x + 1);
     }
 
     public GameObject getRandomSquare(int screenWidth, int screenHeight) {
         int x = (int) Math.floor(Math.random() * squareColorPath.length);
-        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), squareColorPath[x], x + 1);
+        return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), squareColorPath[x], x + 1);
     }
 }

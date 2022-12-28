@@ -21,8 +21,8 @@ public class CircusOfPlates implements World {
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 10;
-    private final int NUMBER_OF_SQUARES = 10;
+    private final int NUMBER_OF_PLATES = 20;
+    private final int NUMBER_OF_SQUARES = 20;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -93,27 +93,43 @@ public class CircusOfPlates implements World {
             }
             if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
                 movingObject.setX(control.get(1).getX() - 8);
-                movingObject.setY(control.get(1).getY() - 5);
+                if (movingObject.getHeight() < 8) {
+                    movingObject.setY(control.get(1).getY() - 5);
+                } else {
+                    movingObject.setY(control.get(1).getY() - 18);
+                }
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
                 movingObject.setX(control.get(2).getX() - 8);
-                movingObject.setY(control.get(2).getY() - 5);
+                if (movingObject.getHeight() < 8) {
+                    movingObject.setY(control.get(2).getY() - 5);
+                } else {
+                    movingObject.setY(control.get(2).getY() - 18);
+                }
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, getObjectOnTop(leftStack))) {
                 movingObject.setX(control.get(1).getX());
-                movingObject.setY(getObjectOnTop(leftStack).getY() - 5);
+                if (movingObject.getHeight() < 8) {
+                    movingObject.setY(getObjectOnTop(leftStack).getY() - 5);
+                } else {
+                    movingObject.setY(getObjectOnTop(leftStack).getY() - 18);
+                }
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, getObjectOnTop(rightStack))) {
                 movingObject.setX(control.get(2).getX());
-                movingObject.setY(getObjectOnTop(rightStack).getY() - 5);
+                if (movingObject.getHeight() < 8) {
+                    movingObject.setY(getObjectOnTop(rightStack).getY() - 5);
+                } else {
+                    movingObject.setY(getObjectOnTop(rightStack).getY() - 18);
+                }
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
             } else {
                 if (!timeout) {
-                    movingObject.setY((movingObject.getY() + 1));
+                    movingObject.setY((movingObject.getY() + 2));
                 }
             }
             respawn(movingObject);

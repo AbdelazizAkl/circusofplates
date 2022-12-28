@@ -30,11 +30,11 @@ public class test {
         menu.add(pauseMenuItem);
         menu.add(resumeMenuItem);
         menuBar.add(menu);
-        final GameController gameController = GameEngine.start("Zizo", new CircusOfPlates(800, 600), menuBar, Color.BLACK);
+        final GameController gameController = GameEngine.start("Circus Of plates", new CircusOfPlates(800, 600), menuBar, Color.BLACK);
         newMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // gameController.changeWorld(new CicusOfPlates(800));
+                 gameController.changeWorld(new CircusOfPlates(800,600));
             }
         });
         pauseMenuItem.addActionListener(new ActionListener() {

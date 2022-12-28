@@ -150,7 +150,7 @@ public class CircusOfPlates implements World {
                 numOfCaughtObjects++;
             } else {
                 if (!timeout) {
-                    movingObject.setY((movingObject.getY() + 1));
+                    movingObject.setY((movingObject.getY() + 3));
                 }
             }
             respawn(movingObject);
@@ -172,7 +172,8 @@ public class CircusOfPlates implements World {
         }
         stack.clear();
         moving.remove(bomb);
-        score -= 10;
+        moving.add(movingObjectsFactory.getBomb(width, height));
+        if(score!=0)score -= 10;
     }
 
     public GameObject getObjectOnTop(ArrayList<GameObject> stack) {

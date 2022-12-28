@@ -41,7 +41,7 @@ public class CircusOfPlates implements World {
             moving.add(movingObjectsFactory.getRandomPlate(screenWidth, screenHeight));
         }
         for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
-            moving.add(movingObjectsFactory.getRandomSquare(screenWidth, screenHeight));
+            //moving.add(movingObjectsFactory.getRandomSquare(screenWidth, screenHeight));
         }
     }
 
@@ -86,6 +86,7 @@ public class CircusOfPlates implements World {
     public boolean refresh() {
         boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
         moveClownSticksWithClown();
+        moveStackWithClown();
 
         for (GameObject movingObject : moving) {
             if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
@@ -138,21 +139,10 @@ public class CircusOfPlates implements World {
         return !timeout;
     }
 
-    boolean check = false;
-
     public void replaceCaughtObjects() {
-        if (check = false) {
-            for (int i = 0; i < numOfCaughtObjects; i++) {
-                moving.add(movingObjectsFactory.getRandomPlate(width, height));
-            }
+        for (int i = 0; i < numOfCaughtObjects; i++) {
+            moving.add(movingObjectsFactory.getRandomPlate(width, height));
         }
-//            check = true;
-//        } else {
-//            for (int i = 0; i < numOfCaughtObjects; i++) {
-//                moving.add(movingObjectsFactory.getRandomSquare(width, height));
-//            }
-//            check = false;
-//        }
         numOfCaughtObjects = 0;
     }
 
@@ -164,20 +154,22 @@ public class CircusOfPlates implements World {
     }
 
     public void moveClownSticksWithClown() {
-        int threeCounterLeft = 0;
-        int threeCounterRight = 0;
+
         control.get(1).setX(control.get(0).getX() - 10);
         control.get(2).setX(control.get(0).getX() + 120);
+    }
+
+    public void moveStackWithClown() {
+        int threeCounterLeft = 0;
+        int threeCounterRight = 0;
         for (GameObject movingObject : leftStack) {
             movingObject.setX(control.get(1).getX() - 8);
-            int x = leftStack.indexOf(movingObject);
-            if (x < 2) {
-
-            } else if (((ImageObject) leftStack.get(x - 1)).getType() == ((ImageObject) leftStack.get(x)).getType() && ((ImageObject) leftStack.get(x)).getType() == ((ImageObject) leftStack.get(x - 2)).getType()) {
-                moving.remove(leftStack.get(x));
-                moving.remove(leftStack.get(x - 1));
-                moving.remove(leftStack.get(x - 2));
-                threeCounterLeft = x;
+            int objectIndexInStack = leftStack.indexOf(movingObject);
+            if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, leftStack))) {
+                moving.remove(leftStack.get(objectIndexInStack));
+                moving.remove(leftStack.get(objectIndexInStack - 1));
+                moving.remove(leftStack.get(objectIndexInStack - 2));
+                threeCounterLeft = objectIndexInStack;
                 score += 10;
             }
         }
@@ -190,15 +182,13 @@ public class CircusOfPlates implements World {
         }
         for (GameObject plate : rightStack) {
             plate.setX(control.get(2).getX() - 8);
-            int x = rightStack.indexOf(plate);
-            if (x < 2) {
-
-            } else if (((ImageObject) rightStack.get(x - 1)).getType() == ((ImageObject) rightStack.get(x)).getType() && ((ImageObject) rightStack.get(x)).getType() == ((ImageObject) rightStack.get(x - 2)).getType()) {
-                moving.remove(rightStack.get(x));
-                moving.remove(rightStack.get(x - 1));
-                moving.remove(rightStack.get(x - 2));
+            int objectIndexInStack = rightStack.indexOf(plate);
+            if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, rightStack))) {
+                moving.remove(rightStack.get(objectIndexInStack));
+                moving.remove(rightStack.get(objectIndexInStack - 1));
+                moving.remove(rightStack.get(objectIndexInStack - 2));
                 score += 10;
-                threeCounterRight = x;
+                threeCounterRight = objectIndexInStack;
             }
         }
         try {
@@ -208,6 +198,13 @@ public class CircusOfPlates implements World {
         } catch (NullPointerException | IndexOutOfBoundsException e) {
 
         }
+    }
+
+    public boolean isSameColor(int objectIndexInStack, ArrayList<GameObject> stack) {
+        int firstObjectType = ((ImageObject) stack.get(objectIndexInStack)).getType();
+        int secondObjectType = ((ImageObject) stack.get(objectIndexInStack - 1)).getType();
+        int thirdObjectType = ((ImageObject) stack.get(objectIndexInStack - 2)).getType();
+        return firstObjectType == secondObjectType && firstObjectType == thirdObjectType;
     }
 
     public void respawn(GameObject movingObject) {

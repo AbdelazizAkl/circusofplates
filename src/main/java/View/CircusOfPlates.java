@@ -1,6 +1,7 @@
 package View;
 
 import Model.BarObject;
+import Model.BombObject;
 import Model.Clown;
 import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
@@ -37,6 +38,7 @@ public class CircusOfPlates implements World {
         control.add(new BarObject(clown.clownObject.getX() - 10, clown.clownObject.getY() - 5, 40, true, black));
         control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));
 
+        moving.add(movingObjectsFactory.getBomb(screenWidth, screenHeight));
         for (int i = 0; i < NUMBER_OF_PLATES; i++) {
             moving.add(movingObjectsFactory.getRandomPlate(screenWidth, screenHeight));
         }
@@ -93,6 +95,14 @@ public class CircusOfPlates implements World {
                 continue;
             }
             if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
+                if(movingObject instanceof BombObject){
+                    for(int i=0;i<leftStack.size();i++){
+                        moving.remove(leftStack.get(i));
+                    }
+                    leftStack.clear();
+                    score-=10;
+                    continue;
+                }
                 movingObject.setX(control.get(1).getX() - 8);
                 if (movingObject.getHeight() < 8) {
                     movingObject.setY(control.get(1).getY() - 5);
@@ -102,6 +112,14 @@ public class CircusOfPlates implements World {
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
+                if(movingObject instanceof BombObject){
+                    for(int i=0;i<rightStack.size();i++){
+                        moving.remove(rightStack.get(i));
+                    }
+                    rightStack.clear();
+                    score-=10;
+                    continue;
+                }
                 movingObject.setX(control.get(2).getX() - 8);
                 if (movingObject.getHeight() < 8) {
                     movingObject.setY(control.get(2).getY() - 5);
@@ -111,6 +129,11 @@ public class CircusOfPlates implements World {
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, getObjectOnTop(leftStack))) {
+                if(movingObject instanceof BombObject){
+                    leftStack.clear();
+                    score-=10;
+                    continue;
+                }
                 movingObject.setX(control.get(1).getX());
                 if (movingObject.getHeight() < 8) {
                     movingObject.setY(getObjectOnTop(leftStack).getY() - 5);
@@ -120,6 +143,12 @@ public class CircusOfPlates implements World {
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
             } else if (intersect(movingObject, getObjectOnTop(rightStack))) {
+                if(movingObject instanceof BombObject){
+                    leftStack.clear();
+                    score-=10;
+                    
+                    continue;
+                }
                 movingObject.setX(control.get(2).getX());
                 if (movingObject.getHeight() < 8) {
                     movingObject.setY(getObjectOnTop(rightStack).getY() - 5);
@@ -128,7 +157,8 @@ public class CircusOfPlates implements World {
                 }
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
-            } else {
+            }
+            else {
                 if (!timeout) {
                     movingObject.setY((movingObject.getY() + 1));
                 }

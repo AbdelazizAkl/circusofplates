@@ -1,5 +1,6 @@
 package View;
 
+import Model.BombObject;
 import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.GameObject;
 
@@ -17,6 +18,10 @@ public class MovingObjectsFactory {
     public GameObject getRandomSquare(int screenWidth, int screenHeight) {
         int x = (int) Math.floor(Math.random() * squareColorPath.length);
         return new ImageObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), squareColorPath[x], x + 1);
+    }
+    
+    public GameObject getBomb(int screenWidth, int screenHeight){
+        return new BombObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -1), "/bomb1.png", "/bomb2.png");
     }
 
     public GameObject getRandomPlateOrSquare(int screenWidth, int screenHeight) {

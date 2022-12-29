@@ -22,8 +22,10 @@ public class CircusOfPlates implements World {
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 5;
-    private final int NUMBER_OF_SQUARES = 5;
+    private final int NUMBER_OF_PLATES = 8;
+    private final int NUMBER_OF_SQUARES = 8;
+    private final int NUMBER_OF_BOMBS = 2;
+    private final int NUMBER_OF_NUKES = 1;
 
     public CircusOfPlates(int screenWidth, int screenHeight) {
 
@@ -31,19 +33,30 @@ public class CircusOfPlates implements World {
         height = screenHeight;
         movingObjectsFactory = new MovingObjectsFactory();
         constant.add(new ImageObject(0, 0, "/background.png"));
+        addControlObjects();
+        addMovingObjects();
+    }
 
+    private void addControlObjects() {
         Clown clown = Clown.getInstance();//singleton pattern        
         clown.createClown("/clown1.png");
         control.add(clown.clownObject);
         control.add(new BarObject(clown.clownObject.getX() - 10, clown.clownObject.getY() - 5, 40, true, black));
         control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));
+    }
 
-        moving.add(movingObjectsFactory.getBomb(screenWidth, screenHeight));
+    private void addMovingObjects() {
+        for (int i = 0; i < NUMBER_OF_BOMBS; i++) {
+            moving.add(movingObjectsFactory.getBomb(width, height));
+        }
         for (int i = 0; i < NUMBER_OF_PLATES; i++) {
-            moving.add(movingObjectsFactory.getRandomPlate(screenWidth, screenHeight));
+            moving.add(movingObjectsFactory.getRandomPlate(width, height));
         }
         for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
-            moving.add(movingObjectsFactory.getRandomSquare(screenWidth, screenHeight));
+            moving.add(movingObjectsFactory.getRandomSquare(width, height));
+        }
+        for (int i = 0; i < NUMBER_OF_NUKES; i++) {
+            //moving.add(movingObjectsFactory.getNuke(width, height));
         }
     }
 
@@ -94,58 +107,42 @@ public class CircusOfPlates implements World {
                 continue;
             }
             if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
-                if (movingObject instanceof BombObject) {
+                if (isBomb(movingObject)) {
                     caughtBomb(movingObject, leftStack);
                     break;
                 }
                 movingObject.setX(control.get(1).getX() - 8);
-                if (movingObject.getHeight() < 8) {
-                    movingObject.setY(control.get(1).getY() - 5);
-                } else {
-                    movingObject.setY(control.get(1).getY() - 18);
-                }
+                placeObjectOnTop(movingObject, control.get(1));
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
-                if (movingObject instanceof BombObject) {
+                if (isBomb(movingObject)) {
                     caughtBomb(movingObject, rightStack);
                     break;
                 }
                 movingObject.setX(control.get(2).getX() - 8);
-                if (movingObject.getHeight() < 8) {
-                    movingObject.setY(control.get(2).getY() - 5);
-                } else {
-                    movingObject.setY(control.get(2).getY() - 18);
-                }
+                placeObjectOnTop(movingObject, control.get(1));
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, getObjectOnTop(leftStack)) && !leftStack.isEmpty()) {
-                if (movingObject instanceof BombObject) {
+                if (isBomb(movingObject)) {
                     caughtBomb(movingObject, leftStack);
                     break;
                 }
                 movingObject.setX(control.get(1).getX());
-                if (movingObject.getHeight() < 8) {
-                    movingObject.setY(getObjectOnTop(leftStack).getY() - 5);
-                } else {
-                    movingObject.setY(getObjectOnTop(leftStack).getY() - 18);
-                }
+                placeObjectOnTop(movingObject, getObjectOnTop(leftStack));                
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, getObjectOnTop(rightStack)) && !rightStack.isEmpty()) {
-                if (movingObject instanceof BombObject) {
+                if (isBomb(movingObject)) {
                     caughtBomb(movingObject, rightStack);
                     break;
                 }
                 movingObject.setX(control.get(2).getX());
-                if (movingObject.getHeight() < 8) {
-                    movingObject.setY(getObjectOnTop(rightStack).getY() - 5);
-                } else {
-                    movingObject.setY(getObjectOnTop(rightStack).getY() - 18);
-                }
+                placeObjectOnTop(movingObject, getObjectOnTop(rightStack));
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
             } else {
@@ -159,11 +156,45 @@ public class CircusOfPlates implements World {
         return !timeout;
     }
 
+    public void placeObjectOnTop(GameObject movingObject, GameObject top) {
+        if (isPlate(movingObject)) {
+            movingObject.setY(top.getY() - 5);
+        } else {
+            movingObject.setY(top.getY() - 18);
+        }
+    }
+
     public void replaceCaughtObjects() {
         for (int i = 0; i < numOfCaughtObjects; i++) {
             moving.add(movingObjectsFactory.getRandomPlateOrSquare(width, height));
         }
         numOfCaughtObjects = 0;
+    }
+
+    public boolean isBomb(GameObject movingObject) {
+        if (movingObject instanceof BombObject bombObject) {
+            if (bombObject.getType() == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isNuke(GameObject movingObject) {
+        if (movingObject instanceof BombObject bombObject) {
+            if (bombObject.getType() == 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isPlate(GameObject movingObject) {
+        return movingObject.getHeight() == 7;
+    }
+
+    public boolean isSquare(GameObject movingObject) {
+        return movingObject.getHeight() == 20;
     }
 
     public void caughtBomb(GameObject bomb, ArrayList<GameObject> stack) {
@@ -173,7 +204,9 @@ public class CircusOfPlates implements World {
         stack.clear();
         moving.remove(bomb);
         moving.add(movingObjectsFactory.getBomb(width, height));
-        if(score!=0)score -= 10;
+        if (score != 0) {
+            score -= 10;
+        }
     }
 
     public GameObject getObjectOnTop(ArrayList<GameObject> stack) {
@@ -251,7 +284,7 @@ public class CircusOfPlates implements World {
 
     @Override
     public int getSpeed() {
-        return 10;
+        return 5;
     }
 
     @Override

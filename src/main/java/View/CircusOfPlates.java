@@ -56,7 +56,7 @@ public class CircusOfPlates implements World {
             moving.add(movingObjectsFactory.getRandomSquare(width, height));
         }
         for (int i = 0; i < NUMBER_OF_NUKES; i++) {
-            //moving.add(movingObjectsFactory.getNuke(width, height));
+            moving.add(movingObjectsFactory.getNuke(width, height));
         }
     }
 
@@ -107,8 +107,7 @@ public class CircusOfPlates implements World {
                 continue;
             }
             if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
-                if (isBomb(movingObject)) {
-                    caughtBomb(movingObject, leftStack);
+                if (ifBombOrNuke(movingObject, leftStack)) {
                     break;
                 }
                 movingObject.setX(control.get(1).getX() - 8);
@@ -117,8 +116,7 @@ public class CircusOfPlates implements World {
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
-                if (isBomb(movingObject)) {
-                    caughtBomb(movingObject, rightStack);
+                if (ifBombOrNuke(movingObject, rightStack)) {
                     break;
                 }
                 movingObject.setX(control.get(2).getX() - 8);
@@ -127,18 +125,16 @@ public class CircusOfPlates implements World {
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, getObjectOnTop(leftStack)) && !leftStack.isEmpty()) {
-                if (isBomb(movingObject)) {
-                    caughtBomb(movingObject, leftStack);
+                if (ifBombOrNuke(movingObject, leftStack)) {
                     break;
                 }
                 movingObject.setX(control.get(1).getX());
-                placeObjectOnTop(movingObject, getObjectOnTop(leftStack));                
+                placeObjectOnTop(movingObject, getObjectOnTop(leftStack));
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
 
             } else if (intersect(movingObject, getObjectOnTop(rightStack)) && !rightStack.isEmpty()) {
-                if (isBomb(movingObject)) {
-                    caughtBomb(movingObject, rightStack);
+                if (ifBombOrNuke(movingObject, rightStack)) {
                     break;
                 }
                 movingObject.setX(control.get(2).getX());
@@ -171,11 +167,22 @@ public class CircusOfPlates implements World {
         numOfCaughtObjects = 0;
     }
 
-    public boolean isBomb(GameObject movingObject) {
+    public boolean ifBombOrNuke(GameObject movingObject, ArrayList<GameObject> stack) {
         if (movingObject instanceof BombObject bombObject) {
             if (bombObject.getType() == 1) {
-                return true;
+                for (GameObject caughtItems : stack) {
+                    moving.remove(caughtItems);
+                }
+                stack.clear();
+                moving.remove(bombObject);
+                moving.add(movingObjectsFactory.getBomb(width, height));
+                if (score != 0) {
+                    score -= 10;
+                }
+            } else if (bombObject.getType() == 2) {
+                System.out.println("game over!");
             }
+            return true;
         }
         return false;
     }
@@ -195,18 +202,6 @@ public class CircusOfPlates implements World {
 
     public boolean isSquare(GameObject movingObject) {
         return movingObject.getHeight() == 20;
-    }
-
-    public void caughtBomb(GameObject bomb, ArrayList<GameObject> stack) {
-        for (GameObject caughtItems : stack) {
-            moving.remove(caughtItems);
-        }
-        stack.clear();
-        moving.remove(bomb);
-        moving.add(movingObjectsFactory.getBomb(width, height));
-        if (score != 0) {
-            score -= 10;
-        }
     }
 
     public GameObject getObjectOnTop(ArrayList<GameObject> stack) {
@@ -284,7 +279,7 @@ public class CircusOfPlates implements World {
 
     @Override
     public int getSpeed() {
-        return 5;
+        return 30;
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.List;
 //lesa 3ayzeen nezabatha MVC
 public class CircusOfPlates implements World {
 
-    private static final int MAX_TIME = 1 * 60 * 1000;
+    private static int MAX_TIME = 1 * 60 * 1000;
     private int score = 0;
     private final long startTime = System.currentTimeMillis();
     private final int width;
@@ -96,10 +96,11 @@ public class CircusOfPlates implements World {
     private ArrayList<GameObject> leftStack = new ArrayList<>();
     private ArrayList<GameObject> rightStack = new ArrayList<>();
     private int numOfCaughtObjects;
+    private boolean timeout;
 
     @Override
     public boolean refresh() {
-        boolean timeout = System.currentTimeMillis() - startTime > MAX_TIME;
+        timeout = System.currentTimeMillis() - startTime > MAX_TIME;
         moveClownSticksWithClown();
         moveStackWithClown();
         for (GameObject movingObject : moving) {
@@ -180,7 +181,8 @@ public class CircusOfPlates implements World {
                     score -= 10;
                 }
             } else if (bombObject.getType() == 2) {
-                System.out.println("game over!");
+                score = 0;
+                MAX_TIME = 0;
             }
             return true;
         }
@@ -217,6 +219,7 @@ public class CircusOfPlates implements World {
         control.get(2).setX(control.get(0).getX() + 120);
     }
 
+    //efsel el moving stack bel add score!
     public void moveStackWithClown() {
         int threeCounterLeft = 0;
         int threeCounterRight = 0;

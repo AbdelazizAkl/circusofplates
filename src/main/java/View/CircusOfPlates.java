@@ -12,26 +12,36 @@ import java.util.List;
 
 //lesa 3ayzeen nezabatha MVC
 //momken nekhally el explosion ye flicker be second spriteImage
+//momken na3mel factory for control and constant
 public class CircusOfPlates implements World {
 
     private static int MAX_TIME = 1 * 60 * 1000;
     private int score = 0;
     private final long startTime = System.currentTimeMillis();
-    private final int width;
-    private final int height;
+    private final int width = 800;
+    private final int height = 600;
     private final List<GameObject> constant = new LinkedList<>();
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
-    MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 5;
-    private final int NUMBER_OF_SQUARES = 5;
-    private final int NUMBER_OF_BOMBS = 2;
-    private final int NUMBER_OF_NUKES = 1;
+    private final MovingObjectsFactory movingObjectsFactory;
+    private final int numOfPlates;
+    private final int numOfSquares;
+    private final int numOfBombs;
+    private final int numOfNukes;
+    private final int speed;
+    private final ArrayList<GameObject> leftStack = new ArrayList<>();
+    private final ArrayList<GameObject> rightStack = new ArrayList<>();
+    private int numOfCaughtObjects;
+    private boolean timeout;
+    private int explosionTime = 0;
+    private boolean bombTriggered = false;
 
-    public CircusOfPlates(int screenWidth, int screenHeight) {
-
-        width = screenWidth;
-        height = screenHeight;
+    public CircusOfPlates(int speed, int numOfPlates, int numOfSquares, int numOfBombs, int numOfNukes) {
+        this.speed = speed;
+        this.numOfPlates = numOfPlates;
+        this.numOfSquares = numOfSquares;
+        this.numOfBombs = numOfBombs;
+        this.numOfNukes = numOfNukes;
         movingObjectsFactory = new MovingObjectsFactory();
         constant.add(new ImageObject(0, 0, "/background.png"));
         addControlObjects();
@@ -47,16 +57,16 @@ public class CircusOfPlates implements World {
     }
 
     private void addMovingObjects() {
-        for (int i = 0; i < NUMBER_OF_BOMBS; i++) {
+        for (int i = 0; i < numOfBombs; i++) {
             moving.add(movingObjectsFactory.getBomb(width, height));
         }
-        for (int i = 0; i < NUMBER_OF_PLATES; i++) {
+        for (int i = 0; i < numOfPlates; i++) {
             moving.add(movingObjectsFactory.getRandomPlate(width, height));
         }
-        for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
+        for (int i = 0; i < numOfSquares; i++) {
             moving.add(movingObjectsFactory.getRandomSquare(width, height));
         }
-        for (int i = 0; i < NUMBER_OF_NUKES; i++) {
+        for (int i = 0; i < numOfNukes; i++) {
             moving.add(movingObjectsFactory.getNuke(width, height));
         }
     }
@@ -93,11 +103,6 @@ public class CircusOfPlates implements World {
     public int getHeight() {
         return height;
     }
-
-    private ArrayList<GameObject> leftStack = new ArrayList<>();
-    private ArrayList<GameObject> rightStack = new ArrayList<>();
-    private int numOfCaughtObjects;
-    private boolean timeout;
 
     @Override
     public boolean refresh() {
@@ -156,17 +161,15 @@ public class CircusOfPlates implements World {
         replaceCaughtObjects();
         return !timeout;
     }
-    int x = 0;
-    boolean bombTriggered = false;
 
     public void removeExplosion() {
 
         if (bombTriggered == true) {
-            x++;
-            if (x == 10) {
+            explosionTime++;
+            if (explosionTime == 10) {
                 constant.remove(1);
                 bombTriggered = false;
-                x = 0;
+                explosionTime = 0;
             }
         }
     }
@@ -296,7 +299,8 @@ public class CircusOfPlates implements World {
 
     @Override
     public int getSpeed() {
-        return 30;
+        //the more the slower
+        return speed;
     }
 
     @Override

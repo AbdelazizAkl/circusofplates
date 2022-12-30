@@ -21,11 +21,11 @@ public class MovingObjectsFactory {
     }
 
     public GameObject getBomb(int screenWidth, int screenHeight) {
-        return new BombObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), "/bomb1.png", "/bomb2.png", 1);
+        return new BombObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -3), "/bomb1.png", "/bomb2.png", 1);
     }
 
     public GameObject getNuke(int screenWidth, int screenHeight) {
-        return new BombObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -2), "/nuke1.png", "/nuke2.png", 2);
+        return new BombObject((int) (Math.random() * screenWidth), (int) (Math.random() * screenHeight * -4), "/nuke1.png", "/nuke2.png", 2);
     }
 
     public GameObject getRandomPlateOrSquare(int screenWidth, int screenHeight) {

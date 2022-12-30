@@ -101,6 +101,7 @@ public class CircusOfPlates implements World {
     @Override
     public boolean refresh() {
         timeout = System.currentTimeMillis() - startTime > MAX_TIME;
+        removeExplosion();
         moveClownSticksWithClown();
         moveStackWithClown();
         for (GameObject movingObject : moving) {
@@ -152,6 +153,20 @@ public class CircusOfPlates implements World {
         replaceCaughtObjects();
         return !timeout;
     }
+    int x = 0;
+    boolean bombTriggered = false;
+
+    public void removeExplosion() {
+
+        if (bombTriggered == true) {
+            x++;
+            if (x == 10) {
+                constant.remove(1);
+                bombTriggered = false;
+                x = 0;
+            }
+        }
+    }
 
     public void placeObjectOnTop(GameObject movingObject, GameObject top) {
         if (isPlate(movingObject)) {
@@ -176,13 +191,21 @@ public class CircusOfPlates implements World {
                 }
                 stack.clear();
                 moving.remove(bombObject);
+                constant.add(new ImageObject(bombObject.getX() - 140, bombObject.getY() - 120, "/explosion.png"));
+                bombTriggered = true;
                 moving.add(movingObjectsFactory.getBomb(width, height));
                 if (score != 0) {
                     score -= 10;
                 }
             } else if (bombObject.getType() == 2) {
-                score = 0;
+                for (GameObject caughtItems : stack) {
+                    moving.remove(caughtItems);
+                }
+                stack.clear();
+                moving.remove(bombObject);
+                constant.add(new ImageObject(bombObject.getX() - 120, bombObject.getY() - 85, "/nuclear.png"));
                 MAX_TIME = 0;
+                score = 10;
             }
             return true;
         }

@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 //lesa 3ayzeen nezabatha MVC
+//momken nekhally el explosion ye flicker be second spriteImage
 public class CircusOfPlates implements World {
 
     private static int MAX_TIME = 1 * 60 * 1000;
@@ -22,8 +23,8 @@ public class CircusOfPlates implements World {
     private final List<GameObject> moving = new LinkedList<>();
     private final List<GameObject> control = new LinkedList<>();
     MovingObjectsFactory movingObjectsFactory;
-    private final int NUMBER_OF_PLATES = 8;
-    private final int NUMBER_OF_SQUARES = 8;
+    private final int NUMBER_OF_PLATES = 5;
+    private final int NUMBER_OF_SQUARES = 5;
     private final int NUMBER_OF_BOMBS = 2;
     private final int NUMBER_OF_NUKES = 1;
 
@@ -104,6 +105,8 @@ public class CircusOfPlates implements World {
         removeExplosion();
         moveClownSticksWithClown();
         moveStackWithClown();
+        catchThreePlates(leftStack);
+        catchThreePlates(rightStack);
         for (GameObject movingObject : moving) {
             if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
                 continue;
@@ -195,7 +198,7 @@ public class CircusOfPlates implements World {
                 bombTriggered = true;
                 moving.add(movingObjectsFactory.getBomb(width, height));
                 if (score != 0) {
-                    score -= 10;
+                    score -= 1;
                 }
             } else if (bombObject.getType() == 2) {
                 for (GameObject caughtItems : stack) {
@@ -205,7 +208,7 @@ public class CircusOfPlates implements World {
                 moving.remove(bombObject);
                 constant.add(new ImageObject(bombObject.getX() - 120, bombObject.getY() - 85, "/nuclear.png"));
                 MAX_TIME = 0;
-                score = 10;
+                score = 0;
             }
             return true;
         }
@@ -242,43 +245,31 @@ public class CircusOfPlates implements World {
         control.get(2).setX(control.get(0).getX() + 120);
     }
 
-    //efsel el moving stack bel add score!
     public void moveStackWithClown() {
-        int threeCounterLeft = 0;
-        int threeCounterRight = 0;
         for (GameObject movingObject : leftStack) {
             movingObject.setX(control.get(1).getX() - 8);
-            int objectIndexInStack = leftStack.indexOf(movingObject);
-            if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, leftStack))) {
-                moving.remove(leftStack.get(objectIndexInStack));
-                moving.remove(leftStack.get(objectIndexInStack - 1));
-                moving.remove(leftStack.get(objectIndexInStack - 2));
-                threeCounterLeft = objectIndexInStack;
-                score += 10;
-            }
-        }
-        try {
-            leftStack.remove(threeCounterLeft - 2);
-            leftStack.remove(threeCounterLeft - 2);
-            leftStack.remove(threeCounterLeft - 2);
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-
         }
         for (GameObject plate : rightStack) {
             plate.setX(control.get(2).getX() - 8);
-            int objectIndexInStack = rightStack.indexOf(plate);
-            if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, rightStack))) {
-                moving.remove(rightStack.get(objectIndexInStack));
-                moving.remove(rightStack.get(objectIndexInStack - 1));
-                moving.remove(rightStack.get(objectIndexInStack - 2));
-                score += 10;
-                threeCounterRight = objectIndexInStack;
+        }
+    }
+
+    public void catchThreePlates(ArrayList<GameObject> stack) {
+        int threeCounter = 0;
+        for (GameObject plate : stack) {
+            int objectIndexInStack = stack.indexOf(plate);
+            if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, stack))) {
+                moving.remove(stack.get(objectIndexInStack));
+                moving.remove(stack.get(objectIndexInStack - 1));
+                moving.remove(stack.get(objectIndexInStack - 2));
+                score += 1;
+                threeCounter = objectIndexInStack;
             }
         }
         try {
-            rightStack.remove(threeCounterRight - 2);
-            rightStack.remove(threeCounterRight - 2);
-            rightStack.remove(threeCounterRight - 2);
+            stack.remove(threeCounter - 2);
+            stack.remove(threeCounter - 2);
+            stack.remove(threeCounter - 2);
         } catch (NullPointerException | IndexOutOfBoundsException e) {
 
         }

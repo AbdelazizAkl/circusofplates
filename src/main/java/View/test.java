@@ -27,15 +27,15 @@ public class test {
         menu.add(pauseMenuItem);
         menu.add(resumeMenuItem);
         menuBar.add(menu);
-        final GameController gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(20, 7, 7, 2, 0), menuBar, Color.BLACK);
+        final GameController gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(2, 7, 7, 2, 0), menuBar, Color.BLACK);
         easyMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(30, 4, 4, 1, 0));
+            gameController.changeWorld(new CircusOfPlates(1, 4, 4, 1, 0));
         });
         mediumMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(20, 7, 7, 2, 0));
+            gameController.changeWorld(new CircusOfPlates(2, 7, 7, 2, 0));
         });
         hardMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(15, 10, 10, 3, 1));
+            gameController.changeWorld(new CircusOfPlates(3, 10, 10, 3, 1));
         });
         pauseMenuItem.addActionListener((ActionEvent e) -> {
             gameController.pause();

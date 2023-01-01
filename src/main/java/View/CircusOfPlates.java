@@ -153,7 +153,7 @@ public class CircusOfPlates implements World {
                 numOfCaughtObjects++;
             } else {
                 if (!timeout) {
-                    movingObject.setY((movingObject.getY() + 3));
+                    movingObject.setY((movingObject.getY() + getSpeed()));
                 }
             }
             respawn(movingObject);

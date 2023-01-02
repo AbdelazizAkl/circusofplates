@@ -6,43 +6,84 @@ package View;
 
 import eg.edu.alexu.csd.oop.game.GameEngine;
 import eg.edu.alexu.csd.oop.game.GameEngine.GameController;
+import eg.edu.alexu.csd.oop.game.World;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.sound.sampled.*;
 
 /**
  *
  * @author PC
  */
-
 //Observer pattern
 public class Menu extends javax.swing.JFrame {
 
-    private int numOfPlates;
-    private int numOfSquares;
-    private int numOfBombs;
-    private int numOfNukes;
-    private int speed;
+    private int numOfPlates = 7;
+    private int numOfSquares = 7;
+    private int numOfBombs = 2;
+    private int numOfNukes = 0;
+    private int speed = 2;
     private GameController gameController;
     private JMenuBar menuBar;
+    private CircusOfPlates circus;
+    private Music player = new Music("/soundtrack.wav");
+
     /**
      * Creates new form Menu
      */
+    //Music Player inner class
+    private class Music {
+
+        Clip clip;
+        AudioInputStream sound;
+
+        public Music(String soundFileName) {
+            try {
+                sound = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/soundtrack.wav"));
+                clip = AudioSystem.getClip();
+                clip.open(sound);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void play() {
+            
+            try {
+                clip.loop(3);
+            } catch (Exception e) {
+            }
+        }
+
+        public void stop() {
+            try {
+                sound.close();
+                clip.close();
+                clip.stop();
+            } catch (IOException e) {
+            }
+        }
+    }
+
     public Menu() {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.setTitle("Circus of Plates");
         this.menuBar = new JMenuBar();
+        player.play();
         JMenu menu = new JMenu("Options");
         JMenuItem easyMenuItem = new JMenuItem("Easy");
         JMenuItem mediumMenuItem = new JMenuItem("Medium");
         JMenuItem hardMenuItem = new JMenuItem("Hard");
-
         JMenuItem pauseMenuItem = new JMenuItem("Pause");
         JMenuItem resumeMenuItem = new JMenuItem("Resume");
         menu.add(easyMenuItem);
@@ -140,17 +181,20 @@ public class Menu extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
-        gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(2, 7, 7, 2, 0), menuBar, Color.BLACK);
+        gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes), menuBar, Color.BLACK);
         this.setVisible(false);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void difficultyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_difficultyButtonActionPerformed
         // TODO add your handling code here:
-        
+        SelectDifficulty s = new SelectDifficulty(this);
+        s.setVisible(true);
     }//GEN-LAST:event_difficultyButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // TODO add your handling code here:
+        player.stop();
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_exitButtonActionPerformed
 
     /**
@@ -194,4 +238,43 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
+    public int getNumOfPlates() {
+        return numOfPlates;
+    }
+
+    public void setNumOfPlates(int numOfPlates) {
+        this.numOfPlates = numOfPlates;
+    }
+
+    public int getNumOfSquares() {
+        return numOfSquares;
+    }
+
+    public void setNumOfSquares(int numOfSquares) {
+        this.numOfSquares = numOfSquares;
+    }
+
+    public int getNumOfBombs() {
+        return numOfBombs;
+    }
+
+    public void setNumOfBombs(int numOfBombs) {
+        this.numOfBombs = numOfBombs;
+    }
+
+    public int getNumOfNukes() {
+        return numOfNukes;
+    }
+
+    public void setNumOfNukes(int numOfNukes) {
+        this.numOfNukes = numOfNukes;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 }

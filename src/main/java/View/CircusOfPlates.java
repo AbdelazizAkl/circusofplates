@@ -46,6 +46,7 @@ public class CircusOfPlates implements World {
         constant.add(new ImageObject(0, 0, "/background.png"));
         addControlObjects();
         addMovingObjects();
+        
     }
 
     private void addControlObjects() {
@@ -107,6 +108,7 @@ public class CircusOfPlates implements World {
     @Override
     public boolean refresh() {
         timeout = System.currentTimeMillis() - startTime > MAX_TIME;
+        MAX_TIME=1*60*1000;
         removeExplosion();
         moveClownSticksWithClown();
         moveStackWithClown();
@@ -257,7 +259,7 @@ public class CircusOfPlates implements World {
         }
     }
 
-    public void catchThreePlates(ArrayList<GameObject> stack) {
+    public synchronized void catchThreePlates(ArrayList<GameObject> stack) {
         int threeCounter = 0;
         for (GameObject plate : stack) {
             int objectIndexInStack = stack.indexOf(plate);

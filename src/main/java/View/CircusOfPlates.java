@@ -20,9 +20,9 @@ public class CircusOfPlates implements World {
     private final long startTime = System.currentTimeMillis();
     private final int width = 800;
     private final int height = 600;
-    private final List<GameObject> constant = new LinkedList<>();
-    private final List<GameObject> moving = new LinkedList<>();
-    private final List<GameObject> control = new LinkedList<>();
+    private final ArrayList<GameObject> constant = new ArrayList<>();
+    private final ArrayList<GameObject> moving = new ArrayList<>();
+    private final ArrayList<GameObject> control = new ArrayList<>();
     private final MovingObjectsFactory movingObjectsFactory;
     private final int numOfPlates;
     private final int numOfSquares;
@@ -46,7 +46,7 @@ public class CircusOfPlates implements World {
         constant.add(new ImageObject(0, 0, "/background.png"));
         addControlObjects();
         addMovingObjects();
-        
+
     }
 
     private void addControlObjects() {
@@ -80,6 +80,9 @@ public class CircusOfPlates implements World {
         return (Math.abs((o1.getX() + o1.getWidth() / 2) - (o2.getX() + o2.getWidth() / 2)) <= o1.getWidth()) && (Math.abs((o1.getY() + o1.getHeight() / 2) - (o2.getY() + o2.getHeight() / 2)) <= o1.getHeight());
     }
 
+    private Iterator createGameObjectsIterator(ArrayList<GameObject> objects){
+        return new GameObjectsIterator(objects);
+    }
     @Override
     public List<GameObject> getConstantObjects() {
         return constant;
@@ -105,16 +108,22 @@ public class CircusOfPlates implements World {
         return height;
     }
 
+    Iterator movingObjectsIterator;
+    GameObject movingObject;
+    //we can also do the iterator pattern for stacks(le ay loop ya3ny)
+    
     @Override
     public boolean refresh() {
         timeout = System.currentTimeMillis() - startTime > MAX_TIME;
-        MAX_TIME=1*60*1000;
+        movingObjectsIterator = createGameObjectsIterator(moving);
+        MAX_TIME = 1 * 60 * 1000;
         removeExplosion();
         moveClownSticksWithClown();
         moveStackWithClown();
         catchThreePlates(leftStack);
         catchThreePlates(rightStack);
-        for (GameObject movingObject : moving) {
+        while (movingObjectsIterator.hasNext()) {
+            movingObject = movingObjectsIterator.next();
             if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
                 continue;
             }

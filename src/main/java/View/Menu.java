@@ -6,13 +6,11 @@ package View;
 
 import eg.edu.alexu.csd.oop.game.GameEngine;
 import eg.edu.alexu.csd.oop.game.GameEngine.GameController;
-import eg.edu.alexu.csd.oop.game.World;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

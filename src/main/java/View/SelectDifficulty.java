@@ -41,7 +41,7 @@ public class SelectDifficulty extends javax.swing.JFrame {
         mediumButton = new javax.swing.JButton();
         hardButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         easyButton.setText("Easy");
         easyButton.addActionListener(new java.awt.event.ActionListener() {

@@ -4,16 +4,21 @@
  */
 package View;
 
+import ObserverPattern.Observer;
+import ObserverPattern.Subject;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 
 /**
  *
  * @author PC
  */
-public class SelectDifficulty extends javax.swing.JFrame {
+public class SelectDifficulty extends javax.swing.JFrame implements Subject {
 
     Menu frame;
+    private boolean visualState;
+    ArrayList<Observer> observers = new ArrayList<>();
 
     /**
      * Creates new form SelectDifficulty
@@ -41,7 +46,7 @@ public class SelectDifficulty extends javax.swing.JFrame {
         mediumButton = new javax.swing.JButton();
         hardButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         easyButton.setText("Easy");
         easyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -69,23 +74,23 @@ public class SelectDifficulty extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hardButton)
-                    .addComponent(mediumButton)
-                    .addComponent(easyButton))
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addComponent(hardButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(easyButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mediumButton, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(27, 27, 27)
                 .addComponent(easyButton)
                 .addGap(18, 18, 18)
                 .addComponent(mediumButton)
                 .addGap(18, 18, 18)
                 .addComponent(hardButton)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -99,7 +104,8 @@ public class SelectDifficulty extends javax.swing.JFrame {
         frame.setNumOfSquares(4);
         frame.setNumOfBombs(1);
         frame.setNumOfNukes(0);
-        this.setVisible(false);
+        this.setVisualState(false);
+        notifyAllObservers();
     }//GEN-LAST:event_easyButtonActionPerformed
 
     private void mediumButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mediumButtonActionPerformed
@@ -110,7 +116,8 @@ public class SelectDifficulty extends javax.swing.JFrame {
         frame.setNumOfSquares(7);
         frame.setNumOfBombs(2);
         frame.setNumOfNukes(0);
-        this.setVisible(false);
+        this.setVisualState(false);
+        notifyAllObservers();
     }//GEN-LAST:event_mediumButtonActionPerformed
 
     private void hardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hardButtonActionPerformed
@@ -120,7 +127,8 @@ public class SelectDifficulty extends javax.swing.JFrame {
         frame.setNumOfSquares(10);
         frame.setNumOfBombs(3);
         frame.setNumOfNukes(1);
-        this.setVisible(false);
+        this.setVisualState(false);
+        notifyAllObservers();
     }//GEN-LAST:event_hardButtonActionPerformed
 
     /**
@@ -163,4 +171,28 @@ public class SelectDifficulty extends javax.swing.JFrame {
     private javax.swing.JButton hardButton;
     private javax.swing.JButton mediumButton;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setVisualState(boolean b) {
+        this.visualState = b;
+        this.setVisible(b);
+        notifyAllObservers();
+    }
+
+    @Override
+    public boolean getVisualState() {
+        return visualState == true;
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void notifyAllObservers() {
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).updateDifficulty();
+        }
+    }
 }

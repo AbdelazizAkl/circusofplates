@@ -1,9 +1,14 @@
 package View;
 
+import Factory.MovingObjectsFactory;
+import Iterator.GameObjectsIterator;
+import Iterator.Iterator;
 import Model.BarObject;
 import Model.BombObject;
 import Model.Clown;
 import Model.ImageObject;
+import ObserverPattern.Observer;
+import ObserverPattern.Subject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
 import java.util.ArrayList;
@@ -317,5 +322,27 @@ public class CircusOfPlates implements World {
     public int getControlSpeed() {
         return 20;
     }
+//        @Override
+//    public void setVisualState(boolean b) {
+//        this.visualState = b;
+//        notifyAllObservers();
+//    }
+//
+//    @Override
+//    public boolean getVisualState() {
+//        return visualState == true;
+//    }
+//
+//    @Override
+//    public void attach(Observer observer) {
+//        observers.add(observer);
+//    }
+//
+//    @Override
+//    public void notifyAllObservers() {
+//        for (int i = 0; i < observers.size(); i++) {
+//            observers.get(i).updateGameFrame();
+//        }
+//    }
 
 }

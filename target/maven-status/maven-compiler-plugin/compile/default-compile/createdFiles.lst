@@ -1,10 +1,6 @@
-View\test$2.class
 View\CircusOfPlates.class
 View\test.class
-View\test$1.class
+Model\Clown.class
 Model\BombObject.class
-View\test$3.class
-View\MovingObjectsFactory.class
 Model\BarObject.class
 Model\ImageObject.class
-Model\Clown.class

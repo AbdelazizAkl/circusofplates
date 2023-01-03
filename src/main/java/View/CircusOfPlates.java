@@ -7,7 +7,6 @@ import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 //lesa 3ayzeen nezabatha MVC
@@ -260,18 +259,18 @@ public class CircusOfPlates implements World {
     }
 
     public void moveStackWithClown() {
-        for (GameObject movingObject : leftStack) {
-            movingObject.setX(control.get(1).getX() - 8);
+        for (GameObject object : leftStack) {
+            object.setX(control.get(1).getX() - 8);
         }
-        for (GameObject plate : rightStack) {
-            plate.setX(control.get(2).getX() - 8);
+        for (GameObject object : rightStack) {
+            object.setX(control.get(2).getX() - 8);
         }
     }
 
     public synchronized void catchThreePlates(ArrayList<GameObject> stack) {
         int threeCounter = 0;
-        for (GameObject plate : stack) {
-            int objectIndexInStack = stack.indexOf(plate);
+        for (GameObject object : stack) {
+            int objectIndexInStack = stack.indexOf(object);
             if (objectIndexInStack >= 2 && (isSameColor(objectIndexInStack, stack))) {
                 moving.remove(stack.get(objectIndexInStack));
                 moving.remove(stack.get(objectIndexInStack - 1));

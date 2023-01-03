@@ -108,7 +108,7 @@ public class Menu extends javax.swing.JFrame implements Observer {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2 - 20);
         this.setTitle("Circus of Plates");
-        //player.play();
+        player.play();
     }
 
     /**
@@ -183,7 +183,6 @@ public class Menu extends javax.swing.JFrame implements Observer {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         gameController = new GameController(() -> new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes));
-//        gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes), menuBar, Color.BLACK);
         gameController.attach((Observer) this);
         gameController.start();
         this.setVisible(false);

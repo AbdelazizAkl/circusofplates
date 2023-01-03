@@ -86,6 +86,7 @@ public final class GameController implements Subject{
                     
                     setVisualState(false);
                     notifyAllObservers();
+                    
                     //some code to return to game main window.
                 }else{
                     

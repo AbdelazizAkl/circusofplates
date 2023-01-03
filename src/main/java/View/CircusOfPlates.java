@@ -168,7 +168,7 @@ public class CircusOfPlates implements World {
                     numOfCaughtObjects++;
                 } else {
                     if (!timeout) {
-                        state.letObjectFall(speed);
+                        state.letObjectFall(2);
                     }
                 }
                 respawn(movingObject);
@@ -291,7 +291,7 @@ public class CircusOfPlates implements World {
     @Override
     public int getSpeed() {
         //the more the slower
-        return speed;
+        return 10;
     }
 
     @Override

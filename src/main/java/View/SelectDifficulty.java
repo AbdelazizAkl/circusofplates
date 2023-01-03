@@ -111,7 +111,7 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
     private void mediumButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mediumButtonActionPerformed
         // TODO add your handling code here:
 //        circus = new CircusOfPlates(2, 7, 7, 2, 0);
-        frame.setSpeed(2);
+        frame.setSpeed(1);
         frame.setNumOfPlates(7);
         frame.setNumOfSquares(7);
         frame.setNumOfBombs(2);
@@ -122,7 +122,7 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
 
     private void hardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hardButtonActionPerformed
         // TODO add your handling code here:
-        frame.setSpeed(3);
+        frame.setSpeed(1);
         frame.setNumOfPlates(10);
         frame.setNumOfSquares(10);
         frame.setNumOfBombs(3);

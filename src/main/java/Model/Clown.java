@@ -5,7 +5,7 @@ import eg.edu.alexu.csd.oop.game.GameObject;
 public class Clown {
 
     private static Clown instance = null;
-    public GameObject clownObject;
+    public GameObjectAbstract clownObject;
 
     private Clown() {
     }

@@ -1,5 +1,9 @@
 package Model;
 
+import View.CaughtState;
+import View.FallingState;
+import View.MovingState;
+import View.StartPositionState;
 import eg.edu.alexu.csd.oop.game.GameObject;
 import java.awt.image.BufferedImage;
 
@@ -11,6 +15,32 @@ public class GameObjectAbstract implements GameObject {
     protected int y;
     protected boolean visible;
     protected int type;
+
+    protected MovingState startPositionState = new StartPositionState(this);
+    protected MovingState fallingState = new FallingState(this);
+    protected MovingState caughtState = new CaughtState(this);
+    protected MovingState currentMovingState = startPositionState;
+
+    public MovingState getStartPositionState() {
+        return startPositionState;
+    }
+
+    public MovingState getFallingState() {
+        return fallingState;
+    }
+
+    public MovingState getCaughtState() {
+        return caughtState;
+    }
+
+
+    public MovingState getMovingState() {
+        return currentMovingState;
+    }
+
+    public void setcurrentMovingState(MovingState movingState) {
+        this.currentMovingState = movingState;
+    }
 
     @Override
     public int getX() {
@@ -63,5 +93,12 @@ public class GameObjectAbstract implements GameObject {
     public BufferedImage[] getSpriteImages() {
         return this.spriteImages;
     }
+    
+    public boolean isPlate() {
+        return this.getHeight() == 7;
+    }
 
+    public boolean isSquare() {
+        return this.getHeight() == 20;
+    }
 }

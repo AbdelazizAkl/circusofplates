@@ -190,7 +190,7 @@ public class CircusOfPlates implements World {
     }
 
     public void placeObjectOnTop(GameObject movingObject, GameObject top) {
-        if (isPlate(movingObject)) {
+        if (movingObject.getHeight() == 7) {
             movingObject.setY(top.getY() - 5);
         } else {
             movingObject.setY(top.getY() - 18);
@@ -242,13 +242,6 @@ public class CircusOfPlates implements World {
         return false;
     }
 
-    public boolean isPlate(GameObject movingObject) {
-        return movingObject.getHeight() == 7;
-    }
-
-    public boolean isSquare(GameObject movingObject) {
-        return movingObject.getHeight() == 20;
-    }
 
     public GameObject getObjectOnTop(ArrayList<GameObject> stack) {
         if (stack.isEmpty()) {

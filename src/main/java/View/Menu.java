@@ -7,7 +7,7 @@ package View;
 import ObserverPattern.Observer;
 import ObserverPattern.Subject;
 import eg.edu.alexu.csd.oop.game.GameEngine;
-import GameController.GameController;
+import Controller.GameController;
 import eg.edu.alexu.csd.oop.game.World;
 import java.awt.Color;
 import java.awt.Dimension;

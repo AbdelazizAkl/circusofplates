@@ -1,5 +1,7 @@
-package Model;
+package Singleton;
 
+import Model.GameObjectAbstract;
+import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.GameObject;
 
 public class Clown {

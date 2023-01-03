@@ -6,7 +6,7 @@ import Iterator.GameObjectsIterator;
 import Iterator.Iterator;
 import Model.BarObject;
 import Model.BombObject;
-import Model.Clown;
+import Singleton.Clown;
 import Model.GameObjectAbstract;
 import Model.ImageObject;
 import eg.edu.alexu.csd.oop.game.*;
@@ -124,7 +124,6 @@ public class CircusOfPlates implements World {
         if (!nukeCaught) {
             timeout = System.currentTimeMillis() - startTime > MAX_TIME;
             movingObjectsIterator = createGameObjectsIterator(moving);
-            MAX_TIME = 1 * 60 * 1000;
             removeExplosion();
             moveClownSticksWithClown();
             moveStackWithClown();

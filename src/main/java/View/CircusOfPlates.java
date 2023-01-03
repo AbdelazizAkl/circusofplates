@@ -38,6 +38,7 @@ public class CircusOfPlates implements World {
     private boolean timeout;
     private int explosionTime = 0;
     private boolean bombTriggered = false;
+    private boolean nukeCaught = false;
 
     public CircusOfPlates(int speed, int numOfPlates, int numOfSquares, int numOfBombs, int numOfNukes) {
         this.speed = speed;
@@ -119,60 +120,63 @@ public class CircusOfPlates implements World {
 
     @Override
     public boolean refresh() {
-        timeout = System.currentTimeMillis() - startTime > MAX_TIME;
-        movingObjectsIterator = createGameObjectsIterator(moving);
-        MAX_TIME = 1 * 60 * 1000;
-        removeExplosion();
-        moveClownSticksWithClown();
-        moveStackWithClown();
-        catchThreePlates(leftStack);
-        catchThreePlates(rightStack);
-        while (movingObjectsIterator.hasNext()) {
-            movingObject = movingObjectsIterator.next();
-            state = ((GameObjectAbstract) movingObject).getCurrentState();
-            if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
-                continue;
+        if (!nukeCaught) {
+            timeout = System.currentTimeMillis() - startTime > MAX_TIME;
+            movingObjectsIterator = createGameObjectsIterator(moving);
+            MAX_TIME = 1 * 60 * 1000;
+            removeExplosion();
+            moveClownSticksWithClown();
+            moveStackWithClown();
+            catchThreePlates(leftStack);
+            catchThreePlates(rightStack);
+            while (movingObjectsIterator.hasNext()) {
+                movingObject = movingObjectsIterator.next();
+                state = ((GameObjectAbstract) movingObject).getCurrentState();
+                if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
+                    continue;
+                }
+                if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
+                    if (ifBombOrNuke(movingObject, leftStack)) {
+                        break;
+                    }
+                    state.placeOnTop(control.get(1), control.get(1).getX() - 8);
+                    leftStack.add(movingObject);
+                    numOfCaughtObjects++;
+
+                } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
+                    if (ifBombOrNuke(movingObject, rightStack)) {
+                        break;
+                    }
+                    state.placeOnTop(control.get(1), control.get(2).getX() - 8);
+                    rightStack.add(movingObject);
+                    numOfCaughtObjects++;
+
+                } else if (intersect(movingObject, getObjectOnTop(leftStack)) && !leftStack.isEmpty()) {
+                    if (ifBombOrNuke(movingObject, leftStack)) {
+                        break;
+                    }
+                    state.placeOnTop(getObjectOnTop(leftStack), control.get(1).getX());
+                    leftStack.add(movingObject);
+                    numOfCaughtObjects++;
+
+                } else if (intersect(movingObject, getObjectOnTop(rightStack)) && !rightStack.isEmpty()) {
+                    if (ifBombOrNuke(movingObject, rightStack)) {
+                        break;
+                    }
+                    state.placeOnTop(getObjectOnTop(rightStack), control.get(2).getX());
+                    rightStack.add(movingObject);
+                    numOfCaughtObjects++;
+                } else {
+                    if (!timeout) {
+                        state.letObjectFall(speed);
+                    }
+                }
+                respawn(movingObject);
             }
-            if (intersect(movingObject, control.get(1)) && leftStack.isEmpty()) { //if movingObject is caught on left bar
-                if (ifBombOrNuke(movingObject, leftStack)) {
-                    break;
-                }
-                state.placeOnTop(control.get(1), control.get(1).getX() - 8);
-                leftStack.add(movingObject);
-                numOfCaughtObjects++;
-
-            } else if (intersect(movingObject, control.get(2)) && rightStack.isEmpty()) {  //if movingObject is caught on right bar
-                if (ifBombOrNuke(movingObject, rightStack)) {
-                    break;
-                }
-                state.placeOnTop(control.get(1), control.get(2).getX() - 8);
-                rightStack.add(movingObject);
-                numOfCaughtObjects++;
-
-            } else if (intersect(movingObject, getObjectOnTop(leftStack)) && !leftStack.isEmpty()) {
-                if (ifBombOrNuke(movingObject, leftStack)) {
-                    break;
-                }
-                state.placeOnTop(getObjectOnTop(leftStack), control.get(1).getX());
-                leftStack.add(movingObject);
-                numOfCaughtObjects++;
-
-            } else if (intersect(movingObject, getObjectOnTop(rightStack)) && !rightStack.isEmpty()) {
-                if (ifBombOrNuke(movingObject, rightStack)) {
-                    break;
-                }
-                state.placeOnTop(getObjectOnTop(rightStack), control.get(2).getX());
-                rightStack.add(movingObject);
-                numOfCaughtObjects++;
-            } else {
-                if (!timeout) {
-                    state.letObjectFall(speed);
-                }
-            }
-            respawn(movingObject);
+            replaceCaughtObjects();
+            return !timeout;
         }
-        replaceCaughtObjects();
-        return !timeout;
+        return !nukeCaught;
     }
 
     public void removeExplosion() {
@@ -186,7 +190,6 @@ public class CircusOfPlates implements World {
             }
         }
     }
-
 
     public void replaceCaughtObjects() {
         for (int i = 0; i < numOfCaughtObjects; i++) {
@@ -216,7 +219,7 @@ public class CircusOfPlates implements World {
                 stack.clear();
                 moving.remove(bombObject);
                 constant.add(new ImageObject(bombObject.getX() - 120, bombObject.getY() - 85, "/nuclear.png"));
-                MAX_TIME = 0;
+                nukeCaught=true;
                 score = 0;
             }
             return true;
@@ -276,7 +279,7 @@ public class CircusOfPlates implements World {
 
     public void respawn(GameObject movingObject) {
         if (movingObject.getY() > height) {
-            ((GameObjectAbstract)(movingObject)).getCurrentState().resetPosition(width);
+            ((GameObjectAbstract) (movingObject)).getCurrentState().resetPosition(width);
         }
     }
 

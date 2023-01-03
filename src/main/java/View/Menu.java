@@ -4,25 +4,30 @@
  */
 package View;
 
+import ObserverPattern.Observer;
+import ObserverPattern.Subject;
 import eg.edu.alexu.csd.oop.game.GameEngine;
-import eg.edu.alexu.csd.oop.game.GameEngine.GameController;
+import GameController.GameController;
+import eg.edu.alexu.csd.oop.game.World;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.function.Supplier;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.sound.sampled.*;
+import javax.swing.JFrame;
 
 /**
  *
  * @author PC
  */
 //Observer pattern
-public class Menu extends javax.swing.JFrame {
+public class Menu extends javax.swing.JFrame implements Observer {
 
     private int numOfPlates = 7;
     private int numOfSquares = 7;
@@ -32,7 +37,32 @@ public class Menu extends javax.swing.JFrame {
     private GameController gameController;
     private JMenuBar menuBar;
     private CircusOfPlates circus;
-    private Music player = new Music("/soundtrack.wav");
+    private Music player = new Music();
+    private SelectDifficulty selectDifficulty;
+
+    @Override
+    public void updateDifficulty() {
+        boolean visualState = selectDifficulty.getVisualState();
+        if (visualState == false) {
+            this.setVisible(true);
+
+        }
+        if (visualState == true) {
+            this.setVisible(false);
+
+        }
+    }
+
+    @Override
+    public void updateGameFrame() {
+        boolean visualState = gameController.getVisualState();
+        if (visualState == false) {
+            this.setVisible(true);
+        }
+        if (visualState == true) {
+            this.setVisible(false);
+        }
+    }
 
     /**
      * Creates new form Menu
@@ -43,7 +73,7 @@ public class Menu extends javax.swing.JFrame {
         Clip clip;
         AudioInputStream sound;
 
-        public Music(String soundFileName) {
+        public Music() {
             try {
                 sound = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/soundtrack.wav"));
                 clip = AudioSystem.getClip();
@@ -54,7 +84,7 @@ public class Menu extends javax.swing.JFrame {
         }
 
         public void play() {
-            
+
             try {
                 clip.loop(3);
             } catch (Exception e) {
@@ -73,40 +103,12 @@ public class Menu extends javax.swing.JFrame {
 
     public Menu() {
         initComponents();
+
         this.setVisible(true);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2 - 20);
         this.setTitle("Circus of Plates");
-        this.menuBar = new JMenuBar();
         player.play();
-        JMenu menu = new JMenu("Options");
-        JMenuItem easyMenuItem = new JMenuItem("Easy");
-        JMenuItem mediumMenuItem = new JMenuItem("Medium");
-        JMenuItem hardMenuItem = new JMenuItem("Hard");
-        JMenuItem pauseMenuItem = new JMenuItem("Pause");
-        JMenuItem resumeMenuItem = new JMenuItem("Resume");
-        menu.add(easyMenuItem);
-        menu.add(mediumMenuItem);
-        menu.add(hardMenuItem);
-        menu.addSeparator();
-        menu.add(pauseMenuItem);
-        menu.add(resumeMenuItem);
-        menuBar.add(menu);
-        easyMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(1, 4, 4, 1, 0));
-        });
-        mediumMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(2, 7, 7, 2, 0));
-        });
-        hardMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.changeWorld(new CircusOfPlates(3, 10, 10, 3, 1));
-        });
-        pauseMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.pause();
-        });
-        resumeMenuItem.addActionListener((ActionEvent e) -> {
-            gameController.resume();
-        });
     }
 
     /**
@@ -180,14 +182,21 @@ public class Menu extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
-        gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes), menuBar, Color.BLACK);
+        gameController = new GameController(() -> new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes));
+//        gameController = GameEngine.start("Circus Of Plates", new CircusOfPlates(speed, numOfPlates, numOfSquares, numOfBombs, numOfNukes), menuBar, Color.BLACK);
+        gameController.attach((Observer) this);
+        gameController.start();
         this.setVisible(false);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void difficultyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_difficultyButtonActionPerformed
         // TODO add your handling code here:
-        SelectDifficulty s = new SelectDifficulty(this);
-        s.setVisible(true);
+        if (selectDifficulty == null) {
+            selectDifficulty = new SelectDifficulty(this);
+            selectDifficulty.attach((Observer) this);
+        }
+        this.setVisible(false);
+        selectDifficulty.setVisualState(true);
     }//GEN-LAST:event_difficultyButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed

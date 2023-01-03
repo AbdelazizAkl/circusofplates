@@ -1,4 +1,7 @@
-package View;
+package main;
+
+import View.Menu;
+import View.Menu;
 
 
 public class test {

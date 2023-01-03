@@ -1,5 +1,5 @@
 
-package View;
+package State;
 
 import eg.edu.alexu.csd.oop.game.GameObject;
 

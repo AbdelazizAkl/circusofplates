@@ -1,5 +1,6 @@
 package View;
 
+import State.MovingState;
 import Factory.MovingObjectsFactory;
 import Iterator.GameObjectsIterator;
 import Iterator.Iterator;

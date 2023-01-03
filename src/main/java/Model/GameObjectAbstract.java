@@ -1,9 +1,9 @@
 package Model;
 
-import View.CaughtState;
-import View.FallingState;
-import View.MovingState;
-import View.StartPositionState;
+import State.CaughtState;
+import State.FallingState;
+import State.MovingState;
+import State.StartPositionState;
 import eg.edu.alexu.csd.oop.game.GameObject;
 import java.awt.image.BufferedImage;
 

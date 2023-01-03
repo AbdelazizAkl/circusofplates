@@ -47,6 +47,11 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
         hardButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         easyButton.setText("Easy");
         easyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -122,7 +127,7 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
 
     private void hardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hardButtonActionPerformed
         // TODO add your handling code here:
-        frame.setSpeed(2);
+        frame.setSpeed(3);
         frame.setNumOfPlates(10);
         frame.setNumOfSquares(10);
         frame.setNumOfBombs(3);
@@ -130,6 +135,12 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
         this.setVisualState(false);
         notifyAllObservers();
     }//GEN-LAST:event_hardButtonActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        this.setVisualState(false);
+        notifyAllObservers();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

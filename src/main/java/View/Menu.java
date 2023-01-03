@@ -108,7 +108,7 @@ public class Menu extends javax.swing.JFrame implements Observer {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2 - 20);
         this.setTitle("Circus of Plates");
-        player.play();
+        //player.play();
     }
 
     /**

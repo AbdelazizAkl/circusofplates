@@ -219,7 +219,7 @@ public class CircusOfPlates implements World {
                 }
                 stack.clear();
                 moving.remove(bombObject);
-                constant.add(new ImageObject(bombObject.getX() - 120, bombObject.getY() - 85, "/nuclear.png"));
+                constant.add(new ImageObject(bombObject.getX() - 120, control.get(1).getY() - 170, "/nuclear.png"));
                 nukeCaught=true;
                 score = 0;
             }
@@ -292,7 +292,7 @@ public class CircusOfPlates implements World {
     @Override
     public int getSpeed() {
         //the more the slower
-        return 1;
+        return 10;
     }
 
     @Override

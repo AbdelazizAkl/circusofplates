@@ -34,7 +34,7 @@ public class GameObjectAbstract implements GameObject {
     }
 
 
-    public MovingState getMovingState() {
+    public MovingState getCurrentState() {
         return currentMovingState;
     }
 

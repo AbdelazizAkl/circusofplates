@@ -17,14 +17,14 @@ public class FallingState implements MovingState {
     }
 
     @Override
-    public void placeOnTop(GameObject top) {
+    public void placeOnTop(GameObject top, int x) {
 
         if (movingObject.getHeight() == 7) {
             movingObject.setY(top.getY() - 5);
         } else {
             movingObject.setY(top.getY() - 18);
         }
-
+        movingObject.setX(x);
         movingObject.setcurrentMovingState(movingObject.getCaughtState());
     }
 
@@ -43,7 +43,7 @@ public class FallingState implements MovingState {
 
         movingObject.setY(0);
         movingObject.setX((int) (Math.random() * screenWidth));
-
+        
         movingObject.setcurrentMovingState(movingObject.getStartPositionState());
     }
 

@@ -6,9 +6,8 @@ import Iterator.Iterator;
 import Model.BarObject;
 import Model.BombObject;
 import Model.Clown;
+import Model.GameObjectAbstract;
 import Model.ImageObject;
-import ObserverPattern.Observer;
-import ObserverPattern.Subject;
 import eg.edu.alexu.csd.oop.game.*;
 import static java.awt.Color.black;
 import java.util.ArrayList;
@@ -84,9 +83,10 @@ public class CircusOfPlates implements World {
         return (Math.abs((o1.getX() + o1.getWidth() / 2) - (o2.getX() + o2.getWidth() / 2)) <= o1.getWidth()) && (Math.abs((o1.getY() + o1.getHeight() / 2) - (o2.getY() + o2.getHeight() / 2)) <= o1.getHeight());
     }
 
-    private Iterator createGameObjectsIterator(ArrayList<GameObject> objects){
+    private Iterator createGameObjectsIterator(ArrayList<GameObject> objects) {
         return new GameObjectsIterator(objects);
     }
+
     @Override
     public List<GameObject> getConstantObjects() {
         return constant;
@@ -114,8 +114,9 @@ public class CircusOfPlates implements World {
 
     Iterator movingObjectsIterator;
     GameObject movingObject;
+    MovingState state;
     //we can also do the iterator pattern for stacks(le ay loop ya3ny)
-    
+
     @Override
     public boolean refresh() {
         timeout = System.currentTimeMillis() - startTime > MAX_TIME;
@@ -128,6 +129,7 @@ public class CircusOfPlates implements World {
         catchThreePlates(rightStack);
         while (movingObjectsIterator.hasNext()) {
             movingObject = movingObjectsIterator.next();
+            state = ((GameObjectAbstract) movingObject).getCurrentState();
             if (leftStack.contains(movingObject) || rightStack.contains(movingObject)) {
                 continue;
             }
@@ -135,8 +137,7 @@ public class CircusOfPlates implements World {
                 if (ifBombOrNuke(movingObject, leftStack)) {
                     break;
                 }
-                movingObject.setX(control.get(1).getX() - 8);
-                placeObjectOnTop(movingObject, control.get(1));
+                state.placeOnTop(control.get(1), control.get(1).getX() - 8);
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
 
@@ -144,8 +145,7 @@ public class CircusOfPlates implements World {
                 if (ifBombOrNuke(movingObject, rightStack)) {
                     break;
                 }
-                movingObject.setX(control.get(2).getX() - 8);
-                placeObjectOnTop(movingObject, control.get(1));
+                state.placeOnTop(control.get(1), control.get(2).getX() - 8);
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
 
@@ -153,8 +153,7 @@ public class CircusOfPlates implements World {
                 if (ifBombOrNuke(movingObject, leftStack)) {
                     break;
                 }
-                movingObject.setX(control.get(1).getX());
-                placeObjectOnTop(movingObject, getObjectOnTop(leftStack));
+                state.placeOnTop(getObjectOnTop(leftStack), control.get(1).getX());
                 leftStack.add(movingObject);
                 numOfCaughtObjects++;
 
@@ -162,13 +161,12 @@ public class CircusOfPlates implements World {
                 if (ifBombOrNuke(movingObject, rightStack)) {
                     break;
                 }
-                movingObject.setX(control.get(2).getX());
-                placeObjectOnTop(movingObject, getObjectOnTop(rightStack));
+                state.placeOnTop(getObjectOnTop(rightStack), control.get(2).getX());
                 rightStack.add(movingObject);
                 numOfCaughtObjects++;
             } else {
                 if (!timeout) {
-                    movingObject.setY((movingObject.getY() + getSpeed()));
+                    state.letObjectFall(speed);
                 }
             }
             respawn(movingObject);
@@ -189,13 +187,6 @@ public class CircusOfPlates implements World {
         }
     }
 
-    public void placeObjectOnTop(GameObject movingObject, GameObject top) {
-        if (movingObject.getHeight() == 7) {
-            movingObject.setY(top.getY() - 5);
-        } else {
-            movingObject.setY(top.getY() - 18);
-        }
-    }
 
     public void replaceCaughtObjects() {
         for (int i = 0; i < numOfCaughtObjects; i++) {
@@ -218,7 +209,7 @@ public class CircusOfPlates implements World {
                 if (score != 0) {
                     score -= 1;
                 }
-            } else if (bombObject.getType() == 2) {
+            } else if (bombObject.getType() == 2) { //if nuke
                 for (GameObject caughtItems : stack) {
                     moving.remove(caughtItems);
                 }
@@ -232,16 +223,6 @@ public class CircusOfPlates implements World {
         }
         return false;
     }
-
-    public boolean isNuke(GameObject movingObject) {
-        if (movingObject instanceof BombObject bombObject) {
-            if (bombObject.getType() == 2) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public GameObject getObjectOnTop(ArrayList<GameObject> stack) {
         if (stack.isEmpty()) {
@@ -258,10 +239,10 @@ public class CircusOfPlates implements World {
 
     public void moveStackWithClown() {
         for (GameObject object : leftStack) {
-            object.setX(control.get(1).getX() - 8);
+            ((GameObjectAbstract) object).getCurrentState().moveWithControlledObjects(control.get(1));
         }
         for (GameObject object : rightStack) {
-            object.setX(control.get(2).getX() - 8);
+            ((GameObjectAbstract) object).getCurrentState().moveWithControlledObjects(control.get(2));
         }
     }
 
@@ -295,8 +276,7 @@ public class CircusOfPlates implements World {
 
     public void respawn(GameObject movingObject) {
         if (movingObject.getY() > height) {
-            movingObject.setY(0);
-            movingObject.setX((int) (Math.random() * width));
+            ((GameObjectAbstract)(movingObject)).getCurrentState().resetPosition(width);
         }
     }
 

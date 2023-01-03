@@ -7,7 +7,7 @@ public interface MovingState {
     
     public void letObjectFall(int speed);
     
-    public void placeOnTop(GameObject top);
+    public void placeOnTop(GameObject top, int x);
     
     public void stackOfThree();
     

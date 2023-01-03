@@ -19,7 +19,7 @@ public class CaughtState implements MovingState{
     }
 
     @Override
-    public void placeOnTop(GameObject top) {
+    public void placeOnTop(GameObject top, int x) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

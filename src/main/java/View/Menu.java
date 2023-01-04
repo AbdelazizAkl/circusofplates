@@ -6,22 +6,13 @@ package View;
 
 import Controller.CircusOfPlates;
 import ObserverPattern.Observer;
-import ObserverPattern.Subject;
-import eg.edu.alexu.csd.oop.game.GameEngine;
 import Controller.GameController;
-import eg.edu.alexu.csd.oop.game.World;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.function.Supplier;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.sound.sampled.*;
-import javax.swing.JFrame;
 
 /**
  *

@@ -23,7 +23,7 @@ public class SelectDifficulty extends javax.swing.JFrame implements Subject {
     /**
      * Creates new form SelectDifficulty
      *
-     * @param circus
+     * @param frame
      */
     public SelectDifficulty(Menu frame) {
         initComponents();

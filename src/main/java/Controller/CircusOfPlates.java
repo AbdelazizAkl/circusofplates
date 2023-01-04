@@ -56,7 +56,6 @@ public class CircusOfPlates implements World {
 
     private void addControlObjects() {
         Clown clown = Clown.getInstance();//singleton pattern        
-        clown.createClown("/clown1.png");
         control.add(clown.clownObject);
         control.add(new BarObject(clown.clownObject.getX() - 10, clown.clownObject.getY() - 5, 40, true, black));
         control.add(new BarObject(clown.clownObject.getX() + 120, clown.clownObject.getY() - 5, 40, true, black));

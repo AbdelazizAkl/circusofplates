@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.CircusOfPlates;
 import ObserverPattern.Observer;
 import ObserverPattern.Subject;
 import eg.edu.alexu.csd.oop.game.GameEngine;

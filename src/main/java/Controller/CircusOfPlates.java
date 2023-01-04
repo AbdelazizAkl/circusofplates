@@ -1,4 +1,4 @@
-package View;
+package Controller;
 
 import State.MovingState;
 import Factory.MovingObjectsFactory;
